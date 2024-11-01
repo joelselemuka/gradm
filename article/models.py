@@ -17,7 +17,7 @@ class UniteVente(models.Model):
         return f'{self.unit}-{self.unitTag}'
 
     class Meta:
-        db_table = 'db_UniteVente'
+        db_table = 't_UniteVente'
         managed = True
         verbose_name = 'UniteVente'
         verbose_name_plural = 'UniteVentes'
@@ -44,7 +44,7 @@ class Product(models.Model):
         return f'{self.codeRef}-{self.libelle}-{self.qteEnVente}{self.unity}'
 
     class Meta:
-        db_table = 'db_Product'
+        db_table = 't_Product'
         managed = True
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
@@ -57,7 +57,7 @@ class ProductCodeBarre(models.Model):
         return self.Product.libelle
 
     class Meta:
-        db_table = 'db_ProductCodeBarre'
+        db_table = 't_ProductCodeBarre'
         managed = True
         verbose_name = 'ProductCodeBarre'
         verbose_name_plural = 'ProductCodeBarres'

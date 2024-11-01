@@ -98,6 +98,18 @@
       align-items: start;
       margin-top: 14px;
     }
+
+    .page-item{
+      padding:0 !important;
+
+    }
+    .page-link{
+      padding:3px 8px !important;
+    }
+    li.page-item > a.active{
+      padding: 0;
+      margin: 0;
+    }
     @media print {
       .no_print {
         display: none !important;
@@ -106,8 +118,11 @@
   </style>
   <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' x-data="{link:''}">
     <div class="main-wrapper">
-      {% include "menu.html" %} {% block content %}{% endblock %}
-      <div id="main-block"></div>
+      {% include "menu.html" %}
+      {% block content %}
+         <div id="main_content"></div>
+      {% endblock %}
+
     </div>
     {% block modal %} {% endblock %}
     <script
@@ -131,7 +146,13 @@
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
-
+    <!--<script src="{% static 'js/dataTables.min.js' %}"></script>
+    <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'js/DataTable.PrintButton.min.js' %}"></script>
+    <script src="{% static 'js/DataTable.Responsive.min.js' %}"></script>
+    <script src="{% static 'js/DataTable.Button.min.min.js' %}"></script>
+    <script src="{% static 'js/DataTable.Columns.visibility.js' %}"></script>
+    <script src="{% static 'js/DataTable.Button.Html5.min.js' %}"></script>-->
     <script
       src="{% static '' %}js/bootstrap.bundle.min.js"
       type="text/javascript"

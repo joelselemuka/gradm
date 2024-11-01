@@ -61,3 +61,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+
+    class Meta:
+        db_table = 't_User'
+        managed = True
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'

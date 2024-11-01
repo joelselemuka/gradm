@@ -9,7 +9,7 @@ class Categorie(models.Model):
         return self.name
 
     class Meta:
-        db_table = 'db_Categorie'
+        db_table = 't_Categorie'
         managed = True
         verbose_name = 'Categorie'
         verbose_name_plural = 'Categories'

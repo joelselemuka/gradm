@@ -21,7 +21,7 @@ class Caisse(models.Model):
         return self.name
 
     class Meta:
-        db_table = 'db_Caisse'
+        db_table = 't_Caisse'
         managed = True
         verbose_name = 'Caisse'
         verbose_name_plural = 'Caisses'
@@ -31,12 +31,28 @@ class Vente(models.Model):
     dateVente = models.DateField()
     total_franc = models.IntegerField()
     total_dollar = models.IntegerField()
+    def __str__(self):
+        return self.dateVente
+
+    class Meta:
+        db_table = 't_Vente'
+        managed = True
+        verbose_name = 'Vente'
+        verbose_name_plural = 'Ventes'
 
 class Depense(models.Model):
     motif= models.TextField(verbose_name="Motif de dépense")
     montant_franc = models.IntegerField()
     montant_dollar = models.IntegerField()
     vente= models.ForeignKey(Vente, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.motif
+
+    class Meta:
+        db_table = 't_Depense'
+        managed = True
+        verbose_name = 'Depense'
+        verbose_name_plural = 'Depenses'
 
 class Facture(models.Model):
     utilisateur = models.ForeignKey(user, on_delete=models.CASCADE)
@@ -48,6 +64,7 @@ class Facture(models.Model):
     remise = models.IntegerField(default=0)
     netPaye = models.IntegerField(default=0)
 
+
     def __str__(self):
         return self.numFacture
 
@@ -56,7 +73,7 @@ class Facture(models.Model):
         super(Facture, self).save(*args, **kwargs)
 
     class Meta:
-        db_table = 'db_Facture'
+        db_table = 't_Facture'
         managed = True
         verbose_name = 'Facture'
         verbose_name_plural = 'Factures'
@@ -73,7 +90,7 @@ class LigneFacture(models.Model):
         return f'{self.facture.numFacture}--{self.product.libelle}'
 
     class Meta:
-        db_table = 'db_LigneFacture'
+        db_table = 't_LigneFacture'
         managed = True
         verbose_name = 'LigneFacture'
         verbose_name_plural = 'LigneFactures'

@@ -43,14 +43,14 @@
             {% csrf_token %}
             <div class="mb-3">
               <label class="form-label">Category</label>
-              {% render_field form.Name class="form-control" %}
+              {% render_field form.name class="form-control" %}
             </div>
 
             <div class="mb-0">
               <div class="status-toggle modal-status">
                 <span class="status-label">Status</span>
-
-                {% render_field form.Status class="select form-select" %}
+{% render_field form.status|attr:"type:checkbox" id="user3"  class="check" %}
+                  <label for="user3" class="checktoggle"></label>
               </div>
             </div>
             <div class="modal-footer-btn">

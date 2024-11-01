@@ -1,4 +1,4 @@
-<div class="table-responsive product-list">
+<div class="table-responsive product-list" id="tableContent">
           <table class="table datanew" id="table">
             <thead>
               <tr>
@@ -38,7 +38,7 @@
 
                 <td class="action-table-data">
                   <div class="edit-delete-action">
-                    <a hx-get="{% url "category:category_update_view" cat.pk %}" hx-target="#dialog"
+                    <a hx-get="{% url 'category:category_update_view' cat.pk %}" hx-target="#dialog"
                       class="me-2 p-2" id="btnEdit">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +60,7 @@
                         ></path>
                       </svg>
                     </a>
-                    <a class="confirm-text p-2" href="javascript:void(0);">
+                    <a class="confirm-textsss p-2 btnDelete"  onClick="deleteRow({{cat.pk}})" href="#">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -83,7 +83,7 @@
                     </a>
                   </div>
                 </td>
-                <div id="ligne_{{cat.id}}"></div>
+
               </tr>
               {% endfor %}
             </tbody>

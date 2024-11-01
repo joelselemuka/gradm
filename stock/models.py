@@ -10,7 +10,7 @@ class Stock(models.Model):
         return f'{self.Product.Name}--{self.Qty}'
 
     class Meta:
-        db_table = 'db_Stock'
+        db_table = 't_Stock'
         managed = True
         verbose_name = 'Stock'
         verbose_name_plural = 'Stocks'
@@ -25,7 +25,7 @@ class Entree(models.Model):
         self.dateEntree = datetime.now()
         super(Entree, self).save(*args, **kwargs)
     class Meta:
-        db_table = 'db_Entree'
+        db_table = 't_Entree'
         managed = True
         verbose_name = 'Entrée'
         verbose_name_plural = 'Entées'
@@ -38,7 +38,7 @@ class DetailAppro(models.Model):
         return f'{self.entree.dateEntree}--{self.product.libelle}'
 
     class Meta:
-        db_table = 'db_DetailAppro'
+        db_table = 't_DetailAppro'
         managed = True
         verbose_name = 'DetailAppro'
         verbose_name_plural = 'DetailAppros'
@@ -58,7 +58,7 @@ class SortieStock(models.Model):
         super(SortieStock, self).save(*args, **kwargs)
 
     class Meta:
-        db_table = 'db_SortieStock'
+        db_table = 't_SortieStock'
         managed = True
         verbose_name = 'SortieStock'
         verbose_name_plural = 'SortieStocks'
@@ -71,7 +71,7 @@ class DetailSortie(models.Model):
         return f'{self.sortie.dateSortie}--{self.product.libelle}'
 
     class Meta:
-        db_table = 'db_DetailSortie'
+        db_table = 't_DetailSortie'
         managed = True
         verbose_name = 'DetailSortie'
         verbose_name_plural = 'DetailSorties'
