@@ -9,6 +9,9 @@ django-htmx = "*"
 django-widget-tweaks = "*"
 django-environ = "*"
 django-render-block = "*"
+faker = "*"
+django-channels = "*"
+psycopg = {extras = ["binary"], version = "*"}
 
 [dev-packages]
 

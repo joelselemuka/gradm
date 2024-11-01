@@ -4,8 +4,8 @@ from time import  timezone
 from datetime import datetime
 # Create your models here.
 class Stock(models.Model):
-    Qty=models.IntegerField(default=0)
-    Product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    qty=models.IntegerField(default=0, verbose_name="Qté en stock")
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
     def __str__(self):
         return f'{self.Product.Name}--{self.Qty}'
 
@@ -15,27 +15,27 @@ class Stock(models.Model):
         verbose_name = 'Stock'
         verbose_name_plural = 'Stocks'
 
-class Approvisionnement(models.Model):
-    DateAppro=models.DateTimeField(auto_now_add=True)
+class Entree(models.Model):
+    dateEntree=models.DateTimeField(auto_now_add=True)
     Product=models.ManyToManyField(Product,through='DetailAppro',related_name='Product_Appro_Items')
     def __str__(self):
-        return f'Approvisionnement du {self.DateAppro}'
+        return f'Enttée stock du {self.dateEntree}'
 
     def save(self, *args, **kwargs):
-        self.DateAppro = datetime.now()
-        super(Approvisionnement, self).save(*args, **kwargs)
+        self.dateEntree = datetime.now()
+        super(Entree, self).save(*args, **kwargs)
     class Meta:
-        db_table = 'db_Approvisionnement'
+        db_table = 'db_Entree'
         managed = True
-        verbose_name = 'Approvisionnement'
-        verbose_name_plural = 'Approvisionnements'
+        verbose_name = 'Entrée'
+        verbose_name_plural = 'Entées'
 
 class DetailAppro(models.Model):
-    Qty=models.IntegerField(default=0)
-    Appro=models.ForeignKey(Approvisionnement,on_delete=models.CASCADE)
-    Product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    qty=models.IntegerField(default=0)
+    entree=models.ForeignKey(Entree,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
     def __str__(self):
-        return f'{self.Appro.DateAppro}--{self.Product.Name}--{self.Qty}'
+        return f'{self.entree.dateEntree}--{self.product.libelle}'
 
     class Meta:
         db_table = 'db_DetailAppro'
@@ -47,13 +47,14 @@ class DetailAppro(models.Model):
 
 # SORTIES STOCK
 class SortieStock(models.Model):
-    DateSortie=models.DateTimeField(auto_now_add=True)
-    Product=models.ManyToManyField(Product,through='DetailSortie',related_name='Product_Sortie_Items')
+    dateSortie=models.DateTimeField(auto_now_add=True)
+    motif = models.TextField(verbose_name="Motif de sortie")
+    product=models.ManyToManyField(Product,through='DetailSortie',related_name='Product_Sortie_Items')
     def __str__(self):
-        return f'Sortie du {self.DateAppro}'
+        return f'Sortie du {self.dateSortie}'
 
     def save(self, *args, **kwargs):
-        self.DateSortie = datetime.now()
+        self.dateSortie = datetime.now()
         super(SortieStock, self).save(*args, **kwargs)
 
     class Meta:
@@ -63,11 +64,11 @@ class SortieStock(models.Model):
         verbose_name_plural = 'SortieStocks'
 
 class DetailSortie(models.Model):
-    Qty=models.IntegerField(default=0)
-    Sortie=models.ForeignKey(SortieStock,on_delete=models.CASCADE)
-    Product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    qty=models.IntegerField(default=0)
+    sortie=models.ForeignKey(SortieStock,on_delete=models.CASCADE)
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
     def __str__(self):
-        return f'{self.Sortie.DateSortie}--{self.Product.Name}--{self.Qty}'
+        return f'{self.sortie.dateSortie}--{self.product.libelle}'
 
     class Meta:
         db_table = 'db_DetailSortie'
