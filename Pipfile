@@ -12,6 +12,7 @@ django-render-block = "*"
 faker = "*"
 django-channels = "*"
 psycopg = {extras = ["binary"], version = "*"}
+python-decouple = "*"
 
 [dev-packages]
 

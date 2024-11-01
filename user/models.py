@@ -55,7 +55,7 @@ class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
     user_type = models.CharField(_("Type d'utilisateur"), choices=user_type, max_length=150, default="CAISSIER")
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['email', 'user_type']
+    REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
 

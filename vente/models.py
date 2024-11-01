@@ -13,7 +13,7 @@ user = get_user_model()
 class Caisse(models.Model):
     name = models.CharField(max_length=100)
     EstOuvert = models.BooleanField(default=False)
-    login = models.ForeignKey(User, on_delete=models.CASCADE)
+    login = models.ForeignKey(user, on_delete=models.CASCADE)
     LastDateOpen = models.DateTimeField()
     LastDateClose = models.DateTimeField()
 
