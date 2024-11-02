@@ -28,24 +28,32 @@ def category_add_view(request):
         form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('category:category_list_view'))
-        return HttpResponseRedirect(reverse('category:category_list_view'))
-    return HttpResponseRedirect(reverse('category:category_list_view'))
-def category_update_view(request,pk):
+            messages.success(request, " Catégorie ajoutée avec succès")
+            return redirect('category:category_list_view')
+        messages.error(request, form.errors)
+        return redirect('category:category_list_view')
+    return render(request, 'category/category_list.html', context)
+
+
+def category_update_view(request, pk):
     cat=Categorie.objects.get(pk=pk)
     categories=Categorie.objects.all().order_by('name')
-    form=CategoryForm(request.POST or None,instance=cat)
-    context={
-        'form':form,
-        'Categories':categories,
-        'page':'category'
-    }
+    form = CategoryForm(request.POST or None, instance=cat)
+
     if request.method == "POST":
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('category:category_list_view'))  
-   
+            messages.success(request,"modification éffectuée avec succès")
+            return redirect('category:category_list_view')
+        messages.error(request, "Modification échouée verifier les données entrées")
+        return redirect('category:category_list_view')
+    context = {
+        'form': form,
+    }
+
     return render(request,'category/partial/_category_modal.html',context)
+
+
 
 def category_delete_view(request,pk):
     cat=Categorie.objects.get(pk=pk).delete()

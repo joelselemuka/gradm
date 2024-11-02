@@ -75,7 +75,7 @@
     />
 
     <link rel="stylesheet" href="{% static '' %}css/style.css" />
-    <link rel="stylesheet" href="{% static '' %}css/print.css" />
+    <link rel="stylesheet" type="text/css" href="{% static '' %}css/print.css" media="print"/>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script
       src="https://unpkg.com/htmx.org@1.9.12"
@@ -98,7 +98,9 @@
       align-items: start;
       margin-top: 14px;
     }
-
+    .table-responsive{
+      border: none;
+    }
     .page-item{
       padding:0 !important;
 
@@ -111,8 +113,56 @@
       margin: 0;
     }
     @media print {
-      .no_print {
+      table td:last-child {
         display: none !important;
+      }
+      table thead tr th:last-child {
+        display: none !important;
+      }
+      table{
+        margin-top: 30px !important;
+      }
+      body{
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        justify-content: center;
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 575px) {
+      .search-input, .search-set, .filter_block, .form-sort, .select{
+        width: 100% !important;
+      }
+      .filter_block{
+        padding-right: 18px;
+        display: block;
+      }
+    }
+    @media (min-width: 576px) {
+      .search-input, .search-set{
+        width: 80% !important;
+      }
+      .form-sort, .select{
+        width: 100%;
+      }
+      .filter_block{
+        width: 70%;
+        display: flex;
+        gap: 3px;
+      }
+    }
+    @media (min-width: 992px) {
+      .search-input, .search-set{
+        width: 75% !important;
+      }
+      .form-sort, .select{
+        width: 100%;
+      }
+      .filter_block{
+        width: 70%;
+        display: flex;
+        gap: 20px;
       }
     }
   </style>

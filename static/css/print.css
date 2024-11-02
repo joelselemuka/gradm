@@ -1,13 +1,7 @@
-@media print {
+
   .no_print {
     display: none !important;
   }
-}
-
-<li>
-              <a
-                href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                ><i data-feather="plus-square"></i
-                ><span>Create Product</span></a
-              >
-            </li>
+  .newPage{
+    page-break-before: always;
+  }

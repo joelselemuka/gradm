@@ -11,11 +11,3 @@ class CategoryForm(forms.ModelForm):
         model = Categorie
         fields = '__all__'
 
-
-     def clean_name(self,*args,**kwargs):
-        name = self.cleaned_data.get('name')
-        cat=Categorie.objects.filter(name=name).exists()
-        if cat:
-            raise forms.ValidationError("Cette catégorie existe déjà!")
-        else:
-            return name
