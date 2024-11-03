@@ -1,12 +1,11 @@
 {% load widget_tweaks %}
 
-
   <div class="modal-content">
     <div class="page-wrapper-new p-0">
       <div class="content">
         <div class="modal-header border-0 custom-modal-header">
           <div class="page-title">
-            <h4>Modifier la catégorie</h4>
+            <h4>Modifier l'unité</h4>
           </div>
           <button
             type="button"
@@ -21,10 +20,13 @@
           <form id="editForm" action="{{request.path}}" method="post">
             {% csrf_token %}
             <div class="mb-3">
-              <label class="form-label">Catégorie</label>
-              {% render_field form.name class="form-control" %}
+              <label class="form-label">Libellé unité</label>
+              {% render_field form.unit class="form-control" %}
             </div>
-
+            <div class="mb-3">
+              <label class="form-label">Abréviation</label>
+              {% render_field form.unitTag class="form-control" %}
+            </div>
             <div class="mb-0">
               <div class="status-toggle modal-status">
                 <span class="status-label">Status</span>

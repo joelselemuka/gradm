@@ -1,8 +1,16 @@
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
 from .models import Product
 
 # Create your views here.
+
+# BLOCK UNITY
+
+from django.shortcuts import render
+
+
+# END BLOCK UNITY
+
+
+
 
 def product_list(request):
     context={

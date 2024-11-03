@@ -524,18 +524,15 @@
             </li>
             <li class="{% if page == 'category' %}active{% endif %}">
               <a
-                hx-get="{% url 'category:category_list_view'%}"
-                hx-target="#main-block"
-                hx-swap="outerHTML"
-                hx-select=""
-                ><i data-feather="codepen"></i><span>Category</span></a
+                href="{% url 'category:category_list_view'%}"
+                ><i data-feather="codepen"></i><span>Catégories</span></a
               >
             </li>
 
-            <li>
+            <li class="{% if page == 'unity' %}active{% endif %}">
               <a
-                href="https://dreamspos.dreamstechnologies.com/html/template/units.html"
-                ><i data-feather="speaker"></i><span>Units</span></a
+                href="{% url 'unity:unity_list_view'%}"
+                ><i data-feather="codepen"></i><span>Unités</span></a
               >
             </li>
             <li>

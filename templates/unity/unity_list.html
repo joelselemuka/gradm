@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% load widget_tweaks %}
-{% block title %}Liste des catégories{% endblock  %}
+{% block title %}Liste des unités de vente{% endblock  %}
 {% block content %}
 
 <div class="page-wrapper" id="main_content">
@@ -7,8 +7,8 @@
         <div class="page-header">
             <div class="add-item d-flex">
                 <div class="page-title">
-                    <h4>Liste des catégories</h4>
-                    <h6>Gestion des categories</h6>
+                    <h4>Liste des unités de vente</h4>
+                    <h6>Gestion des unités de vente</h6>
                 </div>
             </div>
             <ul class="table-top-head">
@@ -44,7 +44,7 @@
                     ></a>
                 </li>
                 <li>
-                    <a href="{% url 'category:category_list_view'%}" data-bs-toggle="tooltip" data-bs-placement="top"
+                    <a href="{% url 'unity:unity_list_view'%}" data-bs-toggle="tooltip" data-bs-placement="top"
                        title="Refresh"
                     ><i data-feather="rotate-ccw" class="feather-rotate-ccw"></i
                     ></a>
@@ -64,7 +64,7 @@
                         class="btn btn-added"
                         data-bs-toggle="modal"
                         data-bs-target="#add-category"
-                ><i data-feather="plus-circle" class="me-2"></i>Ajouter une catégorie</a
+                ><i data-feather="plus-circle" class="me-2"></i>Ajouter une unité</a
                 >
             </div>
         </div>
@@ -124,11 +124,11 @@
 
                             <select class="select select2-hidden-accessible" id="tableLen">
                                 <option value="999999999999999999999999999999999">Ligne affichée</option>
-                                <option value="2">20 Catégories</option>
-                                <option value="50">50 Catégories</option>
-                                <option value="100">100 Catégories</option>
-                                <option value="200">200 Catégories</option>
-                                <option value="500">500 Catégories</option>
+                                <option value="2">20 Unités</option>
+                                <option value="50">50 Unités</option>
+                                <option value="100">100 Unités</option>
+                                <option value="200">200 Unités</option>
+                                <option value="500">500 Unités</option>
                             </select>
                         </div>
 
@@ -143,7 +143,6 @@
                     </div>
 
                 </div>
-
 
                 {% if messages %}
                 {% for message in messages %}
@@ -165,14 +164,15 @@
                                 </label>
                             </th>
                             <th >ID</th>
-                            <th>Catégories</th>
+                            <th>Unités</th>
+                            <th>Abréviation</th>
                             <th class="no_print">Statut</th>
                             <th>Date Création</th>
                             <th class="no-sort no_print">Action</th>
                         </tr>
                         </thead>
                         <tbody id="tableBody">
-                        {% for cat in Categories %}
+                        {% for cat in unities %}
 
                         <tr>
                             <td>
@@ -182,7 +182,8 @@
                                 </label>
                             </td>
                             <td>{{ cat.pk}}</td>
-                            <td>{{ cat.name}}</td>
+                            <td>{{ cat.unit}}</td>
+                            <td>{{ cat.unitTag}}</td>
                             <td>
                                 {% if cat.status == True %}
                                 <span class="badge badge-linesuccess">Activée</span>
@@ -190,11 +191,11 @@
                                 <span class="badge badge-linedanger">Désactivée</span>
                                 {% endif %}
                             </td>
-                            <td>{{ cat.created_at}}</td>
+                            <td>{{ cat.created}}</td>
 
                             <td class="action-table-data no_print">
                                 <div class="edit-delete-action">
-                                    <a hx-get="{% url 'category:category_update_view' cat.pk %}" hx-target="#dialog"
+                                    <a hx-get="{% url 'unity:unity_update_view' cat.pk %}" hx-target="#dialog"
                                        class="me-2 p-2" id="btnEdit">
                                         <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -259,7 +260,7 @@
                 <div class="content">
                     <div class="modal-header border-0 custom-modal-header">
                         <div class="page-title">
-                            <h4>Créer une catégorie</h4>
+                            <h4>Créer une unité</h4>
                         </div>
                         <button
                                 type="button"
@@ -272,15 +273,20 @@
                     </div>
                     <div class="modal-body custom-modal-body">
                         <form id="addCategoryForm"
-                             method="post"
-                              action="{% url 'category:category_add_view' %}"
+
+                              action="{% url 'unity:unity_add_view' %}"
+                              method="post"
                         >
                             {% csrf_token %}
-
                             <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                {% render_field form.name class="form-control" %}
-                                <div class="help-block">{{ form.name.errors }}</div>
+                                <label class="form-label">Libellé unité</label>
+                                {% render_field form.unit class="form-control" %}
+                                <div class="help-block">{{ form.unit.errors }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Abréviation</label>
+                                {% render_field form.unitTag class="form-control" %}
+                                <div class="help-block">{{ form.unitTag.errors }}</div>
                             </div>
 
                             <div class="mb-0">
@@ -301,7 +307,7 @@
                                     Cancel
                                 </button>
                                 <button type="submit" class="btn btn-submit">
-                                    Créer la catégorie
+                                    Créer l'unité
                                 </button>
                             </div>
                         </form>
@@ -335,9 +341,7 @@
             modal.hide();
         }
     });
-    $("form").submit(function () {
-        window.location.href = "/category/add"
-    });
+
 
     function deleteRow(id) {
         const pk = id
@@ -354,7 +358,7 @@
 
         }).then(function (result) {
             if (result.isConfirmed) {
-                window.location.href = "/category/delete/" + pk
+                window.location.href = "/unity/delete/" + pk
             }
         })
 
@@ -375,17 +379,13 @@
 
         }).then(function (result) {
             if (result.isConfirmed) {
-                window.location.href = "/category/update/" + pk
+                window.location.href = "/unity/update/" + pk
             }
         })
 
     }
 
-    function addCategory() {
 
-        addCategoryForm
-
-    }
 
 
 </script>

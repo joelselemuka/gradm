@@ -12,17 +12,18 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Categorie',
+            name='UniteVente',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=250, unique=True, verbose_name='Catégorie')),
+                ('unit', models.CharField(max_length=250)),
+                ('unitTag', models.CharField(max_length=5)),
+                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Date de creation')),
                 ('status', models.BooleanField(default=True, verbose_name='Status')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Date de creation')),
             ],
             options={
-                'verbose_name': 'Categorie',
-                'verbose_name_plural': 'Categories',
-                'db_table': 't_Categorie',
+                'verbose_name': 'UniteVente',
+                'verbose_name_plural': 'UniteVentes',
+                'db_table': 't_UniteVente',
                 'managed': True,
             },
         ),

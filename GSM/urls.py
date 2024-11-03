@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('category/', include('category.urls')),
     path('article/', include('article.urls')),
+    path('unity/', include('unity.urls')),
 
 ]
 urlpatterns += static(settings.STATIC_URL, documents_root=settings.STATIC_ROOT)

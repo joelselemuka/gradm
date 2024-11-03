@@ -3,24 +3,11 @@ from django.db import models
 # Create your models here.
 from django.db import models
 from category.models import Categorie
+from unity.models import  UniteVente
 # Create your models here.
 
 
 
-class UniteVente(models.Model):
-   
-    unit = models.CharField(max_length=250)
-    unitTag = models.CharField(max_length=5)
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Date de creation")
-    status=models.BooleanField(default=True, verbose_name="Status")
-    def __str__(self):
-        return f'{self.unit}-{self.unitTag}'
-
-    class Meta:
-        db_table = 't_UniteVente'
-        managed = True
-        verbose_name = 'UniteVente'
-        verbose_name_plural = 'UniteVentes'
 
 class Product(models.Model):
     CHOICES=(
