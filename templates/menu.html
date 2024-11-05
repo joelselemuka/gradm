@@ -503,12 +503,12 @@
           <h6 class="submenu-hdr">Inventory</h6>
           <ul>
             <li class="{% if page == 'product' %}active{% endif %}">
-              <a href="{% url "article:product_list" %}"><i data-feather="box"></i><span>Products</span></a>
+              <a href="{% url "article:product_list_view" %}"><i data-feather="box"></i><span>Articles</span></a>
             </li>
             <li class="menu {% if page == 'add_product' %}active{% endif %}">
-              <a href="{% url "article:add_product" %}"
+              <a href="{% url "article:product_add_view" %}"
                 ><i data-feather="plus-square"></i
-                ><span>Create Product</span></a
+                ><span>Creer un article</span></a
               >
             </li>
             <li class="menu">
@@ -2154,7 +2154,7 @@
             <a href=""><span>Products</span></a>
           </li>
           <li class="{% if page == 'add_product' %}active{% endif %}">
-            <a href="{% url "article:add_product" %}"><span>Create Product</span></a>
+            <a href="{% url "article:product_add_view" %}"><span>Create Product</span></a>
           </li>
           <li>
             <a href=""><span>Expired Products</span></a>

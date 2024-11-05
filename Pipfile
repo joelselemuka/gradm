@@ -8,11 +8,11 @@ django = "*"
 django-htmx = "*"
 django-widget-tweaks = "*"
 django-environ = "*"
-django-render-block = "*"
 faker = "*"
 django-channels = "*"
 psycopg = {extras = ["binary"], version = "*"}
 python-decouple = "*"
+django-render-block = "*"
 
 [dev-packages]
 

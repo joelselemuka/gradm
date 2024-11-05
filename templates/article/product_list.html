@@ -6,8 +6,8 @@
     <div class="page-header">
       <div class="add-item d-flex">
         <div class="page-title">
-          <h4>Category List</h4>
-          <h6>Manage your categories</h6>
+          <h4>Liste des articles</h4>
+          <h6>Gestion des articles</h6>
         </div>
       </div>
       <ul class="table-top-head">
@@ -63,86 +63,91 @@
           class="btn btn-added"
           data-bs-toggle="modal"
           data-bs-target="#add-category"
-          ><i data-feather="plus-circle" class="me-2"></i>Add New Category</a
+          ><i data-feather="plus-circle" class="me-2"></i>Creer un article</a
         >
       </div>
     </div>
-
     <div class="card table-list-card">
       <div class="card-body">
         <div class="table-top">
-          <div class="search-set">
-            <div class="search-input">
-              <a href="javascript:void(0);" class="btn btn-searchset"
-                ><svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
+          <div class="search-set flex-grow-1">
+            <div class="search-input ">
+                <a href="javascript:void(0);" class="btn btn-searchset"
+                >
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-search"
+                    >
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg
+                    >
+                </a>
+                <div id="DataTables_Table_0_filter" class="dataTables_filter w-100">
+                    <label class="w-100">
+                        <input
+                                id="tableSearch"
+                                type="search"
+                                class="form-control form-control-sm w-100"
+                                placeholder="Search"
+                                aria-controls="DataTables_Table_0"
+                        /></label>
+                </div>
+            </div>
+        </div>
+          <div class="d-block d-sm-flex justify-content-end align-items-center filter_block">
+            <div class="search-path">
+              <a class="btn btn-filter" id="filter_search">
+                <i data-feather="filter" class="filter-icon"></i>
+                <span
+                  ><img
+                    src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/icons/closes.svg"
+                    alt="img"
+                /></span>
+              </a>
+            </div>
+            <div class="form-sort" data-select2-id="77">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="feather feather-sliders info-img"
+              >
+                <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  class="feather feather-search"
-                >
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg
-              ></a>
-              <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                <label>
-                  <input
-                    id="tableSearch"
-                    type="search"
-                    class="form-control form-control-sm"
-                    placeholder="Search"
-                    aria-controls="DataTables_Table_0"
-                /></label>
-              </div>
+                  d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z"
+                />
+              </svg>
+  
+              <select class="select select2-hidden-accessible" id="tableLen">
+                <option>Ligne affichée</option>
+                <option value="20">20 Articles</option>
+                <option value="50">50 Articles</option>
+                <option value="100">100 Articles</option>
+                <option value="200">200 Articles</option>
+                <option value="500">500 Articles</option>
+              </select>
             </div>
-          </div>
-          <div class="form-sort" data-select2-id="77">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="feather feather-sliders info-img"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z"
-              />
-            </svg>
-
-            <select class="select select2-hidden-accessible" id="tableLen">
-              <option>Ligne affichée</option>
-              <option value="20">20 Articles</option>
-              <option value="50">50 Articles</option>
-              <option value="100">100 Articles</option>
-              <option value="200">200 Articles</option>
-              <option value="500">500 Articles</option>
-            </select>
-          </div>
-          <div class="search-path">
-            <a class="btn btn-filter" id="filter_search">
-              <i data-feather="filter" class="filter-icon"></i>
-              <span
-                ><img
-                  src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/icons/closes.svg"
-                  alt="img"
-              /></span>
-            </a>
-          </div>
-          <div class="form-sort">
-            <i data-feather="sliders" class="info-img"></i>
-            <select class="select status" id="status">
-              <option value="">Statut</option>
-              <option value="Activée">Activée</option>
-              <option value="Désactivée">Désactivée</option>
-            </select>
+            
+            <div class="form-sort">
+              <i data-feather="sliders" class="info-img"></i>
+              <select class="select status" id="status">
+                <option value="">Statut</option>
+                <option value="Activée">Activée</option>
+                <option value="Désactivée">Désactivée</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -215,7 +220,7 @@
           </div>
         </div>
       
-        <div class="table-responsive product-list" hx-trigger="category_edited from:body" hx-get="{% url "category:category_rows_view" %}" hx-swap="outerHTML">
+        <div class="table-responsive product-list" >
           <table class="table datanew" id="table">
             <thead>
               <tr>
@@ -225,15 +230,24 @@
                     <span class="checkmarks"></span>
                   </label>
                 </th>
-                <th>ID</th>
-                <th>Catégories</th>
+                <th>Code</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
+                <th>Libelle</th>
                 <th>Statut</th>
                 <th>Date Création</th>
                 <th class="no-sort no_print">Action</th>
               </tr>
             </thead>
             <tbody id="tableBody">
-              {% for cat in Categories %}
+              {% for cat in products %}
 
             <tr>
                 <td>
