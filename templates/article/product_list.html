@@ -232,22 +232,20 @@
                 </th>
                 <th>Code</th>
                 <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
-                <th>Libelle</th>
+                <th>Catégorie</th>
+                <th>P.U</th>
+                <th>Stock actuel</th>
+                <th>Stock alerte</th>
+                <th>Type</th>
+                <th>Date fab.</th>
+                <th>Date exp.</th>
                 <th>Statut</th>
                 <th>Date Création</th>
                 <th class="no-sort no_print">Action</th>
               </tr>
             </thead>
             <tbody id="tableBody">
-              {% for cat in products %}
+              {% for prod in products %}
 
             <tr>
                 <td>
@@ -256,20 +254,27 @@
                     <span class="checkmarks"></span>
                   </label>
                 </td>
-                <td>{{ cat.pk}}</td>
-                <td>{{ cat.Name}}</td>
+                <td>{{ prod.codeRef}}</td>
+                <td>{{ prod.libelle}}</td>
+                <td>{{ prod.categorie}}</td>
+                <td>{{ prod.pu}}</td>
+                <td>{{ prod.qty}}</td>
+                <td>{{ prod.stockAlert}}</td>
+                <td>{{ prod.productType}}</td>
+                <td>{{ prod.manuf_on}}</td>
+                <td>{{ prod.expiried_on}}</td>
                 <td>
-                  {% if cat.Status == "Activée" %}
+                  {% if prod.Status == "Activée" %}
                   <span class="badge badge-linesuccess">Activée</span>
                   {% else %}
                   <span class="badge badge-linedanger">Désactivée</span>
                   {% endif %}
                 </td>
-                <td>{{ cat.Created}}</td>
+                <td>{{ prod.Created_at}}</td>
 
                 <td class="action-table-data">
                   <div class="edit-delete-action">
-                    <a hx-get="{% url "category:category_update_view" cat.pk %}" hx-target="#dialog"
+                    <a hx-get="{% url 'article:product_update_view' prod.pk %}" hx-target="#dialog"
                       class="me-2 p-2" id="btnEdit">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +296,7 @@
                         ></path>
                       </svg>
                     </a>
-                    <a class="confirm-textsss p-2 btnDelete"  onClick="deleteRow({{cat.pk}})" href="#">
+                    <a class="confirm-textsss p-2 btnDelete"  onClick="deleteRow({{prod.pk}})" href="#">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"

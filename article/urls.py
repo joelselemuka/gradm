@@ -7,6 +7,9 @@ urlpatterns = [
 
     path('delete/<int:pk>/',Product_delete_view,name="product_delete_view"),
     path('add/',product_add_view,name="product_add_view"),
+    path('create/', ProductCreate.as_view(), name='create_product'),
+    path('update/<int:pk>/', ProductUpdate.as_view(), name='update_product'),
+    path('delete-variant/<int:pk>/', delete_variant, name='delete_variant'),
 
     
 ]

@@ -2,6 +2,26 @@
 @import "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap";
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap";
 
+
+.c_datepicker{
+  position: relative;
+}
+
+.w_200{
+  width: 200px !important;
+}
+.w_400{
+  width: 400px !important;
+}
+.w_500{
+  width: 500px !important;
+}
+.w_600{
+  width: 600px !important;
+}
+
+
+
 .search-dropdown .search-info .customers li a img {
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;

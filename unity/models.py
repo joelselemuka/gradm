@@ -9,7 +9,7 @@ class UniteVente(models.Model):
     status = models.BooleanField(default=True, verbose_name="Status")
 
     def __str__(self):
-        return f'{self.unit}-{self.unitTag}'
+        return self.unitTag
 
     class Meta:
         db_table = 't_UniteVente'
