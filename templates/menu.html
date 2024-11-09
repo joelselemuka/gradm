@@ -506,7 +506,7 @@
               <a href="{% url "article:product_list_view" %}"><i data-feather="box"></i><span>Articles</span></a>
             </li>
             <li class="menu {% if page == 'add_product' %}active{% endif %}">
-              <a href="{% url "article:product_add_view" %}"
+              <a href="{% url "article:create_product" %}"
                 ><i data-feather="plus-square"></i
                 ><span>Creer un article</span></a
               >
@@ -2154,7 +2154,7 @@
             <a href=""><span>Products</span></a>
           </li>
           <li class="{% if page == 'add_product' %}active{% endif %}">
-            <a href="{% url "article:product_add_view" %}"><span>Create Product</span></a>
+            <a href="{% url "article:create_product" %}"><span>Create Product</span></a>
           </li>
           <li>
             <a href=""><span>Expired Products</span></a>

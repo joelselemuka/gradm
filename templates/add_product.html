@@ -16,7 +16,7 @@
                 <li>
                     <div class="page-btn">
                         <a href="https://dreamspos.dreamstechnologies.com/html/template/product-list.html"
-                           class="btn btn-secondary"><i data-feather="arrow-left" class="me-2"></i>Back to Product</a>
+                            class="btn btn-secondary"><i data-feather="arrow-left" class="me-2"></i>Back to Product</a>
                     </div>
                 </li>
                 <li>
@@ -36,27 +36,41 @@
                         <div class="accordion-item">
                             <div class="accordion-header" id="headingOne">
                                 <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                                     aria-controls="collapseOne">
+                                    aria-controls="collapseOne">
                                     <div class="addproduct-icon">
                                         <h5><i data-feather="info" class="add-info"></i><span>Product Information</span>
                                         </h5>
                                         <a href="javascript:void(0);"><i data-feather="chevron-down"
-                                                                         class="chevron-down-add"></i></a>
+                                                class="chevron-down-add"></i></a>
                                     </div>
                                 </div>
                             </div>
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                                 data-bs-parent="#accordionExample">
+                                data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <div class="row mb-3">
-                                        <div class="col-lg-4 col-sm-4 col-12">
-                                            <label class="form-label">Catégorie de l'article</label>
+                                        <div class="mb-3 add-product col-lg-4 col-sm-4 col-12">
+                                            <div class="add-newplus">
+                                                <label class="form-label">Catégorie de l'article</label>
+                                                <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#add-units-category"><i data-feather="plus-circle"
+                                                        class="plus-down-add"></i><span>Add
+                                                        New</span></a>
+                                            </div>
                                             {% render_field form.categorie class="select" %}
                                         </div>
-                                        <div class="col-lg-4 col-sm-4 col-12">
-                                            <label class="form-label">Unité de vente</label>
+                                        
+                                        <div class="mb-3 add-product col-lg-4 col-sm-4 col-12">
+                                            <div class="add-newplus">
+                                                <label class="form-label">Catégorie de l'article</label>
+                                                <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#add-units-category"><i data-feather="plus-circle"
+                                                        class="plus-down-add"></i><span>Add
+                                                        New</span></a>
+                                            </div>
                                             {% render_field form.unity class="select" %}
                                         </div>
+                                        
                                     </div>
                                     <div class="row mb-3">
 
@@ -83,35 +97,36 @@
                         <div class="accordion-item">
                             <div class="accordion-header" id="headingTwo">
                                 <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                                     aria-controls="collapseTwo">
+                                    aria-controls="collapseTwo">
                                     <div class="text-editor add-list">
                                         <div class="addproduct-icon list icon">
-                                            <h5><i data-feather="life-buoy"
-                                                   class="add-info"></i><span>Prix & Variations</span></h5>
+                                            <h5><i data-feather="life-buoy" class="add-info"></i><span>Prix &
+                                                    Variations</span></h5>
                                             <a href="javascript:void(0);"><i data-feather="chevron-down"
-                                                                             class="chevron-down-add"></i></a>
+                                                    class="chevron-down-add"></i></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo"
-                                 data-bs-parent="#accordionExample2">
+                                data-bs-parent="#accordionExample2">
                                 <div class="accordion-body">
                                     <div class="input-blocks add-products">
                                         <label class="d-block">Type de produit</label>
 
                                         <div class="d-flex w-100 type_block" x-date="{Type:'Produit simple'}">
 
-                                                    {% render_field form.productType|attr:"type:radio" class="form-check-input"  @click="getValue()" %}
+                                            {% render_field form.productType|attr:"type:radio" class="form-check-input"
+                                            @click="getValue()" %}
                                         </div>
                                     </div>
                                     <div class="tab-content" id="pills-tabContent">
 
                                         <div class="tab-pane fade show active" id="pills-profile" role="tabpanel"
-                                             aria-labelledby="pills-profile-tab">
+                                            aria-labelledby="pills-profile-tab">
                                             {% with named_formsets.variants as formset %}
-                                                {{ formset.management_form }}
-                                                <script type="text/html" id="variants-template">  // id="inlineformsetname-template"
+                                            {{ formset.management_form }}
+                                            <script type="text/html" id="variants-template">  // id="inlineformsetname-template"
                                                 // id='inlineformsetname-__prefix__'
                                                 <tr id="variants-__prefix__" class=hide_all>
                 {% for fields in formset.empty_form.hidden_fields %}
@@ -123,30 +138,38 @@
                 {% endfor %}
             </tr>
                                                 </script>
-                                                <div class="modal-body-table variant-table" id="variant-table" style="display: block; ">
-                                                <div class="table-responsive" >
-                                                    <table class="table" >
+                                            <div class="modal-body-table variant-table" id="variant-table"
+                                                style="display: block; ">
+                                                <div class="table-responsive">
+                                                    <table class="table">
                                                         <thead>
-                                                        <tr style="gap: 10px">
-                                                            <th>Code ref <span style="color: #fff">jjjjjjjjjjj</span></th>
-                                                            <th>Variation <span style="color: #fff">jjjjjjjjjjju</span></th>
-                                                            <th style="width: 500px !important;">Qté vente</th>
-                                                            <th>PU <span style="color: #fff">jjjjjjjjjjjuuuuuuuuuu</span>      </th>
-                                                            <th>Expire ?</th>
-                                                            <th>Date exp.<span style="color: #fff">jjjjjjjjjjjuuuu</span></th>
-                                                            <th>Code-barre <span style="color: #fff">jjjjjjjjjjjuuuuuuuuuu</span></th>
-                                                            <th>Statut</th>
-                                                            <th>Supprimer ?</th>
+                                                            <tr style="gap: 10px">
+                                                                <th>Code ref <span
+                                                                        style="color: #fff">jjjjjjjjjjj</span></th>
+                                                                <th>Variation <span
+                                                                        style="color: #fff">jjjjjjjjjjju</span></th>
+                                                                <th style="width: 500px !important;">Qté vente</th>
+                                                                <th>PU <span
+                                                                        style="color: #fff">jjjjjjjjjjjuuuuuuuuuu</span>
+                                                                </th>
+                                                                <th>Expire ?</th>
+                                                                <th>Date exp.<span
+                                                                        style="color: #fff">jjjjjjjjjjjuuuu</span></th>
+                                                                <th>Code-barre <span
+                                                                        style="color: #fff">jjjjjjjjjjjuuuuuuuuuu</span>
+                                                                </th>
+                                                                <th>Statut</th>
+                                                                <th>Supprimer ?</th>
 
-                                                        </tr>
+                                                            </tr>
                                                         </thead>
                                                         <tbody id="item-variants">
-                                                        {% for error in formset.non_form_errors %}
-                                                        <span style="color: red">{{ error }}</span>
-                                                        {% endfor %}
-                                                        {% for formss in formset %}
-                                                        {{ formss.management_form }}
-                                                        <tr id="variants-{{ forloop.counter0 }}" class="hide_all ">
+                                                            {% for error in formset.non_form_errors %}
+                                                            <span style="color: red">{{ error }}</span>
+                                                            {% endfor %}
+                                                            {% for formss in formset %}
+                                                            {{ formss.management_form }}
+                                                            <tr id="variants-{{ forloop.counter0 }}" class="hide_all ">
 
                                                                 {{ formss.id }}
                                                                 {% for field in formss.visible_fields %}
@@ -164,26 +187,40 @@
                                                                 {% comment %} for delete {% endcomment %}
                                                                 {% if formss.instance.pk %}
                                                                 <td>
-                                                                    <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                                            data-target="#exampleModal{{formss.instance.pk}}">
+                                                                    <button type="button" class="btn btn-danger"
+                                                                        data-toggle="modal"
+                                                                        data-target="#exampleModal{{formss.instance.pk}}">
                                                                         Delete
                                                                     </button>
                                                                     <!-- Modal -->
-                                                                    <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog"
-                                                                         aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                                                    <div class="modal fade"
+                                                                        id="exampleModal{{formss.instance.pk}}"
+                                                                        tabindex="-1" role="dialog"
+                                                                        aria-labelledby="exampleModalLabel{{formss.instance.pk}}"
+                                                                        aria-hidden="true">
                                                                         <div class="modal-dialog" role="document">
                                                                             <div class="modal-content">
                                                                                 <div class="modal-header">
-                                                                                    <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Are
-                                                                                        Your Sure You Want To Delete This?</h5>
-                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                        <span aria-hidden="true">&times;</span>
+                                                                                    <h5 class="modal-title"
+                                                                                        id="exampleModalLabel{{formss.instance.pk}}">
+                                                                                        Are
+                                                                                        Your Sure You Want To Delete
+                                                                                        This?</h5>
+                                                                                    <button type="button" class="close"
+                                                                                        data-dismiss="modal"
+                                                                                        aria-label="Close">
+                                                                                        <span
+                                                                                            aria-hidden="true">&times;</span>
                                                                                     </button>
                                                                                 </div>
                                                                                 <div class="modal-footer">
                                                                                     <a href="{% url 'products:delete_variant' formss.instance.pk %}"
-                                                                                       type="button" class="btn btn-primary">Yes, Delete</a>
-                                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                                                                        type="button"
+                                                                                        class="btn btn-primary">Yes,
+                                                                                        Delete</a>
+                                                                                    <button type="button"
+                                                                                        class="btn btn-secondary"
+                                                                                        data-dismiss="modal">Close
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
@@ -191,13 +228,15 @@
                                                                     </div>
                                                                 </td>
                                                                 {% endif %}
-                                                        </tr>
-                                                        {% endfor %}
+                                                            </tr>
+                                                            {% endfor %}
                                                         </tbody>
                                                     </table>
                                                     <div class="row">
                                                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                                            <a  href="#" id="add-variant-button" class="btn btn-secondary add-variants mt-2 mb-2">Ajouter une variante</a>
+                                                            <a href="#" id="add-variant-button"
+                                                                class="btn btn-secondary add-variants mt-2 mb-2">Ajouter
+                                                                une variante</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -220,8 +259,8 @@
             </div>
         </form>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-                integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-                crossorigin="anonymous"></script>
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
         <script>
 
             $(document).ready(function () {
@@ -236,7 +275,7 @@
                     // update form count
                     $('#id_variants-TOTAL_FORMS').attr('value', count + 1);
                 });
-                radio=document.getElementsByName("productType")
+                radio = document.getElementsByName("productType")
 
                 if (radio.item(0).checked) {
                     document.getElementById("add-variant-button").style.display = "none";
@@ -246,7 +285,7 @@
             });
 
             function getValue() {
-                radio=document.getElementsByName("productType")
+                radio = document.getElementsByName("productType")
 
                 if (radio.item(0).checked) {
                     document.getElementById("add-variant-button").style.display = "none";
@@ -255,7 +294,7 @@
                 }
 
 
-}
+            }
         </script>
 
 
@@ -264,7 +303,7 @@
 </div>
 
 
-{% endblock  %}
+{% endblock %}
 
 {% block modal %}
 <div class="modal fade" id="add-units-category">
@@ -288,7 +327,7 @@
                         <div class="modal-footer-btn">
                             <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
                             <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
+                                class="btn btn-submit">Submit</a>
                         </div>
                     </div>
                 </div>
@@ -319,7 +358,7 @@
                         <div class="modal-footer-btn">
                             <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
                             <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
+                                class="btn btn-submit">Submit</a>
                         </div>
                     </div>
                 </div>
@@ -350,7 +389,7 @@
                         <div class="modal-footer-btn">
                             <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
                             <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
+                                class="btn btn-submit">Submit</a>
                         </div>
                     </div>
                 </div>
@@ -419,7 +458,7 @@
                                         <input type="file">
                                         <div class="image-uploads">
                                             <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/download-img.png"
-                                                 alt="img">
+                                                alt="img">
                                             <h4>Drag and drop a <span>file to upload</span></h4>
                                         </div>
                                     </div>
@@ -430,15 +469,15 @@
                                             <div class="add-choosen mb-3">
                                                 <div class="phone-img ms-0">
                                                     <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/products/phone-add-2.png"
-                                                         alt="image">
+                                                        alt="image">
                                                     <a href="javascript:void(0);"><i data-feather="x"
-                                                                                     class="x-square-add remove-product"></i></a>
+                                                            class="x-square-add remove-product"></i></a>
                                                 </div>
                                                 <div class="phone-img">
                                                     <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/products/phone-add-1.png"
-                                                         alt="image">
+                                                        alt="image">
                                                     <a href="javascript:void(0);"><i data-feather="x"
-                                                                                     class="x-square-add remove-product"></i></a>
+                                                            class="x-square-add remove-product"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -497,7 +536,7 @@
                         <div class="modal-footer-btn">
                             <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
                             <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
+                                class="btn btn-submit">Submit</a>
                         </div>
                     </div>
                 </div>

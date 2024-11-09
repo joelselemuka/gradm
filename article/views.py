@@ -3,12 +3,16 @@ from django.shortcuts import redirect, render
 from django.views.generic import UpdateView, CreateView
 
 from category.forms import CategoryForm
+from category.models import Categorie
 from stock.models import Stock
 from unity.forms import UnityForm
-from .form import ProductForm,ProductForm2, VariantFormSet
+from .form import ProductForm,ProductForm2, VariantFormSet,ImageFormSet
 from .models import Product,Variantes
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
+from category.forms import CategoryForm
+from unity.forms import UnityForm
+from unity.models import UniteVente
 
 
 def product_view(request):
@@ -24,65 +28,10 @@ def product_view(request):
     return render(request,'article/product_list.html',context)
 
 
-def product_add_view(request):
-    form = ProductForm()
-    catForm=CategoryForm()
-    unitForm=UnityForm()
-    context = {
-        'form': form,
-        'catForm': catForm,
-        'unitForm': unitForm,
-        'page': 'add_product',
-    }
-    if request.method == "POST":
-        # form = ProductForm(request.POST)
-        # if form.is_valid():
-        #     form.save()
-        #     messages.success(request, " Article Ajouté avec succès")
-        #     return redirect('article:article_list_view')
-        # messages.error(request, form.errors)
-        libelle = request.POST['libelle']
-        print("============================================")
-        for l in libelle:
-            print(l)
-        return render(request, 'article/add_product.html', context)
-    return render(request, 'article/add_product.html', context)
-
-
-def Product_update_view(request, pk):
-    cat=Product.objects.get(pk=pk)
-    Products=Product.objects.all().order_by('libelle')
-    form = ProductForm(request.POST or None, instance=cat)
-
-    if request.method == "POST":
-        if form.is_valid():
-            form.save()
-            messages.success(request,"modification éffectuée avec succès")
-            return redirect('Product:Product_list_view')
-        messages.error(request, "Modification échouée verifier les données entrées")
-        return redirect('Product:Product_list_view')
-    context = {
-        'form': form,
-    }
-
-    return render(request,'article/add_product.html',context)
-
-def Product_delete_view(request,pk):
-    cat=Product.objects.get(pk=pk).delete()
-   
-    Products=Product.objects.all().order_by('libelle')
-    context={
-        'products':Products,
-        'page':'Product'
-    }
-    
-    return HttpResponseRedirect(reverse('Product:Product_list_view'))
-
-
 class ProductInline():
     form_class = ProductForm2
     model = Product
-    template_name = "add_product.html"
+    template_name = "article/add_product.html"
 
     def form_valid(self, form):
         named_formsets = self.get_named_formsets()
@@ -164,7 +113,59 @@ def delete_variant(request, pk):
     return redirect('products:update_product', pk=variant.product.id)
 
 
-   
+
+def add_category(request):
     
+    if request.method == "POST":
+        name= request.POST.get('name')
+        status= request.POST.get('status')
+        s=False
+        form = CategoryForm(request.POST)
+        if not name or name is None:
+            messages.error(request, "Ajout de la Catégorie échouée, le nom est vide")
+            return redirect('article:create_product')
+        else:
+            if status == "on":
+                s=True
+            else:
+                s=False
+
+            c=Categorie.objects.create(name=name,status=s)
+            c.save()
+            messages.success(request, " Catégorie ajoutée avec succès")
+            return redirect('article:create_product')
+
+    return render(request, 'article/add_product.html')
+
+
+
+def add_unity(request):
+    
+    if request.method == "POST":
+        name= request.POST.get('unit')
+        tag= request.POST.get('unitTag')
+        status= request.POST.get('status')
+        s=False
+        
+        if not name or name is None:
+            messages.error(request, "Ajout de l'Unité de gestion échouée, le nom est vide")
+            return redirect('article:create_product')
+        elif not tag or tag is None:
+            messages.error(request, "Ajout de l'Unité de gestion échouée, le tag est vide")
+            return redirect('article:create_product')
+        else:
+            if status == "on":
+                s=True
+            else:
+                s=False
+
+            c=UniteVente.objects.create(unit=name,unitTag=tag,status=s)
+            c.save()
+            messages.success(request, " Nouvelle Unité de gestion ajoutée avec succès")
+            return redirect('article:create_product')
+
+    return render(request, 'article/add_product.html')
+
+
 
 

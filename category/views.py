@@ -28,6 +28,7 @@ def category_add_view(request):
         form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()
+            
             messages.success(request, " Catégorie ajoutée avec succès")
             return redirect('category:category_list_view')
         messages.error(request, form.errors)

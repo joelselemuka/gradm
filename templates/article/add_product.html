@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 {% block title %} Créer un article {% endblock %}
+
 {% block content %}
 <div class="page-wrapper">
     <div class="content">
@@ -14,7 +16,7 @@
                 <li>
                     <div class="page-btn">
                         <a href="https://dreamspos.dreamstechnologies.com/html/template/product-list.html"
-                           class="btn btn-secondary"><i data-feather="arrow-left" class="me-2"></i>Back to Product</a>
+                            class="btn btn-secondary"><i data-feather="arrow-left" class="me-2"></i>Back to Product</a>
                     </div>
                 </li>
                 <li>
@@ -24,191 +26,78 @@
             </ul>
         </div>
 
-        <form action="https://dreamspos.dreamstechnologies.com/html/template/add-product.html">
+
+        <form enctype="multipart/form-data" class="container" method="post" id="product_form">
+            {% csrf_token %}
+            <!-- main form start --- in our case product form -->
             <div class="card">
                 <div class="card-body add-product pb-0">
                     <div class="accordion-card-one accordion" id="accordionExample">
                         <div class="accordion-item">
                             <div class="accordion-header" id="headingOne">
                                 <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                                     aria-controls="collapseOne">
+                                    aria-controls="collapseOne">
                                     <div class="addproduct-icon">
                                         <h5><i data-feather="info" class="add-info"></i><span>Product Information</span>
                                         </h5>
                                         <a href="javascript:void(0);"><i data-feather="chevron-down"
-                                                                         class="chevron-down-add"></i></a>
+                                                class="chevron-down-add"></i></a>
                                     </div>
                                 </div>
                             </div>
+                            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mx-2">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><i
+                            class="fas fa-xmark"></i></button>
+                </div>
+                {% endfor %}
+                {% endif %}
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                                 data-bs-parent="#accordionExample">
+                                data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="col-lg-4 col-sm-6 col-12">
-                                            <div class="mb-3 add-product">
-                                                <label class="form-label">Store</label>
-                                                <select class="select">
-                                                    <option>Choose</option>
-                                                    <option>Thomas</option>
-                                                    <option>Rasmussen</option>
-                                                    <option>Fred john</option>
-                                                </select>
+                                    <div class="row mb-3">
+                                        <div class="mb-3 add-product col-lg-4 col-sm-4 col-12">
+                                            <div class="add-newplus">
+                                                <label class="form-label">Catégorie de l'article</label>
+                                                <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#add-category"><i data-feather="plus-circle"
+                                                        class="plus-down-add"></i><span>Add
+                                                        New</span></a>
                                             </div>
+                                            {% render_field form.categorie class="select" %}
                                         </div>
-                                        <div class="col-lg-4 col-sm-6 col-12">
-                                            <div class="mb-3 add-product">
-                                                <label class="form-label">Warehouse</label>
-                                                <select class="select">
-                                                    <option>Choose</option>
-                                                    <option>Legendary</option>
-                                                    <option>Determined</option>
-                                                    <option>Sincere</option>
-                                                </select>
+                                        
+                                        <div class="mb-3 add-product col-lg-4 col-sm-4 col-12">
+                                            <div class="add-newplus">
+                                                <label class="form-label">Unité de géstion</label>
+                                                <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#add-unit"><i data-feather="plus-circle"
+                                                        class="plus-down-add"></i><span>Add
+                                                        New</span></a>
                                             </div>
+                                            {% render_field form.unity class="select" %}
                                         </div>
+                                        
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-4 col-sm-6 col-12">
-                                            <div class="mb-3 add-product">
-                                                <label class="form-label">Product Name</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-sm-6 col-12">
-                                            <div class="mb-3 add-product">
-                                                <label class="form-label">Slug</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-sm-6 col-12">
-                                            <div class="input-blocks add-product list">
-                                                <label>SKU</label>
-                                                <input type="text" class="form-control list" placeholder="Enter SKU">
-                                                <button type="submit" class="btn btn-primaryadd">
-                                                    Generate Code
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="addservice-info">
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <div class="add-newplus">
-                                                        <label class="form-label">Category</label>
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                           data-bs-target="#add-units-category"><i
-                                                                data-feather="plus-circle"
-                                                                class="plus-down-add"></i><span>Add
-New</span></a>
-                                                    </div>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Lenovo</option>
-                                                        <option>Electronics</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <label class="form-label">Sub Category</label>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Lenovo</option>
-                                                        <option>Electronics</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <label class="form-label">Sub Sub Category</label>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Fruits</option>
-                                                        <option>Computers</option>
-                                                        <option>Shoes</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="add-product-new">
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <div class="add-newplus">
-                                                        <label class="form-label">Brand</label>
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                           data-bs-target="#add-units-brand"><i
-                                                                data-feather="plus-circle"
-                                                                class="plus-down-add"></i><span>Add New</span></a>
-                                                    </div>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Nike</option>
-                                                        <option>Bolt</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <div class="add-newplus">
-                                                        <label class="form-label">Unit</label>
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal"
-                                                           data-bs-target="#add-unit"><i data-feather="plus-circle"
-                                                                                         class="plus-down-add"></i><span>Add New</span></a>
-                                                    </div>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Kg</option>
-                                                        <option>Pc</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="mb-3 add-product">
-                                                    <label class="form-label">Selling Type</label>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Transactional selling</option>
-                                                        <option>Solution selling</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 col-sm-6 col-12">
-                                            <div class="mb-3 add-product">
-                                                <label class="form-label">Barcode Symbology</label>
-                                                <select class="select">
-                                                    <option>Choose</option>
-                                                    <option>Code34</option>
-                                                    <option>Code35</option>
-                                                    <option>Code36</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-sm-6 col-12">
-                                            <div class="input-blocks add-product list">
-                                                <label>Item Code</label>
-                                                <input type="text" class="form-control list"
-                                                       placeholder="Please Enter Item Code">
-                                                <button type="submit" class="btn btn-primaryadd">
-                                                    Generate Code
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="row mb-3">
 
-                                    <div class="col-lg-12">
-                                        <div class="input-blocks summer-description-box transfer mb-3">
-                                            <label>Description</label>
-                                            <textarea class="form-control h-100" rows="5"></textarea>
-                                            <p class="mt-1">Maximum 60 Characters</p>
+                                        <div class="col-lg-8 col-sm-8 col-12">
+                                            <label class="form-label">Libellé article</label>
+                                            {% render_field form.libelle class="form-control" placeholder="Entrer le nom du produit" %}
+                                        </div>
+                                        <div class="col-lg-4 col-sm-4 col-12">
+                                            <label class="form-label">Stock d'alerte</label>
+                                            {% render_field form.stockAlert class="form-control" %}
                                         </div>
                                     </div>
-
+                                    <div class="row mb-3">
+                                        <div class=" col-12">
+                                            <label class="form-label">Déscription de l'article</label>
+                                            {% render_field form.description class="form-control" %}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -217,398 +106,150 @@ New</span></a>
                         <div class="accordion-item">
                             <div class="accordion-header" id="headingTwo">
                                 <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                                     aria-controls="collapseTwo">
+                                    aria-controls="collapseTwo">
                                     <div class="text-editor add-list">
                                         <div class="addproduct-icon list icon">
-                                            <h5><i data-feather="life-buoy"
-                                                   class="add-info"></i><span>Pricing & Stocks</span></h5>
+                                            <h5><i data-feather="life-buoy" class="add-info"></i><span>Prix &
+                                                    Variations</span></h5>
                                             <a href="javascript:void(0);"><i data-feather="chevron-down"
-                                                                             class="chevron-down-add"></i></a>
+                                                    class="chevron-down-add"></i></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo"
-                                 data-bs-parent="#accordionExample2">
+                                data-bs-parent="#accordionExample2">
                                 <div class="accordion-body">
                                     <div class="input-blocks add-products">
-                                        <label class="d-block">Product Type</label>
-                                        <div class="single-pill-product">
-                                            <ul class="nav nav-pills" id="pills-tab1" role="tablist">
-                                                <li class="nav-item" role="presentation">
-<span class="custom_radio me-4 mb-0 active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
-      role="tab" aria-controls="pills-home" aria-selected="true">
-<input type="radio" class="form-control" name="payment">
-<span class="checkmark"></span> Single Product</span>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-<span class="custom_radio me-2 mb-0" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
-      role="tab" aria-controls="pills-profile" aria-selected="false">
-<input type="radio" class="form-control" name="sign">
-<span class="checkmark"></span> Variable Product</span>
-                                                </li>
-                                            </ul>
+                                        <label class="d-block">Type de produit</label>
+
+                                        <div class="d-flex w-100 type_block" x-date="{Type:'Produit simple'}">
+
+                                            {% render_field form.productType|attr:"type:radio" class="form-check-input" @click="getValue()" %}
                                         </div>
                                     </div>
                                     <div class="tab-content" id="pills-tabContent">
-                                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
-                                             aria-labelledby="pills-home-tab">
-                                            <div class="row">
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Quantity</label>
-                                                        <input type="text" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Price</label>
-                                                        <input type="text" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Tax Type</label>
-                                                        <select class="select">
-                                                            <option>Exclusive</option>
-                                                            <option>Sales Tax</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Discount Type</label>
-                                                        <select class="select">
-                                                            <option>Choose</option>
-                                                            <option>Percentage</option>
-                                                            <option>Cash</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Discount Value</label>
-                                                        <input type="text" placeholder="Choose">
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Quantity Alert</label>
-                                                        <input type="text" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-card-one accordion" id="accordionExample3">
-                                                <div class="accordion-item">
-                                                    <div class="accordion-header" id="headingThree">
-                                                        <div class="accordion-button" data-bs-toggle="collapse"
-                                                             data-bs-target="#collapseThree"
-                                                             aria-controls="collapseThree">
-                                                            <div class="addproduct-icon list">
-                                                                <h5><i data-feather="image" class="add-info"></i><span>Images</span>
-                                                                </h5>
-                                                                <a href="javascript:void(0);"><i
-                                                                        data-feather="chevron-down"
-                                                                        class="chevron-down-add"></i></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div id="collapseThree" class="accordion-collapse collapse show"
-                                                         aria-labelledby="headingThree"
-                                                         data-bs-parent="#accordionExample3">
-                                                        <div class="accordion-body">
-                                                            <div class="text-editor add-list add">
-                                                                <div class="col-lg-12">
-                                                                    <div class="add-choosen">
-                                                                        <div class="input-blocks">
-                                                                            <div class="image-upload">
-                                                                                <input type="file">
-                                                                                <div class="image-uploads">
-                                                                                    <i data-feather="plus-circle"
-                                                                                       class="plus-down-add me-0"></i>
-                                                                                    <h4>Add Images</h4>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="phone-img">
-                                                                            <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/products/phone-add-2.png"
-                                                                                 alt="image">
-                                                                            <a href="javascript:void(0);"><i
-                                                                                    data-feather="x"
-                                                                                    class="x-square-add remove-product"></i></a>
-                                                                        </div>
-                                                                        <div class="phone-img">
-                                                                            <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/products/phone-add-1.png"
-                                                                                 alt="image">
-                                                                            <a href="javascript:void(0);"><i
-                                                                                    data-feather="x"
-                                                                                    class="x-square-add remove-product"></i></a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="pills-profile" role="tabpanel"
-                                             aria-labelledby="pills-profile-tab">
-                                            <div class="row select-color-add">
-                                                <div class="col-lg-6 col-sm-6 col-12">
-                                                    <div class="input-blocks add-product">
-                                                        <label>Variant Attribute</label>
-                                                        <div class="row">
-                                                            <div class="col-lg-10 col-sm-10 col-10">
-                                                                <select class="form-control variant-select select-option"
-                                                                        id="colorSelect">
-                                                                    <option>Choose</option>
-                                                                    <option>Color</option>
-                                                                    <option value="red">Red</option>
-                                                                    <option value="black">Black</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                                                <div class="add-icon tab">
-                                                                    <a class="btn btn-filter" data-bs-toggle="modal"
-                                                                       data-bs-target="#add-units"><i
-                                                                            class="feather feather-plus-circle"></i></a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="selected-hide-color" id="input-show">
-                                                        <div class="row align-items-center">
-                                                            <div class="col-sm-10">
-                                                                <div class="input-blocks">
-                                                                    <input class="input-tags form-control" id="inputBox"
-                                                                           type="text" data-role="tagsinput"
-                                                                           name="specialist" value="red, black">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-2">
-                                                                <div class="input-blocks ">
-                                                                    <a href="javascript:void(0);"
-                                                                       class="remove-color"><i
-                                                                            class="far fa-trash-alt"></i></a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-body-table variant-table" id="variant-table">
+
+                                        <div class="tab-pane fade show active" id="pills-profile" role="tabpanel"
+                                            aria-labelledby="pills-profile-tab">
+                                            {% with named_formsets.variants as formset %}
+                                            {{ formset.management_form }}
+                                            <script type="text/html" id="variants-template">  // id="inlineformsetname-template"
+                                                // id='inlineformsetname-__prefix__'
+                                                <tr id="variants-__prefix__" class=hide_all>
+                {% for fields in formset.empty_form.hidden_fields %}
+                {{ fields }}
+                {% endfor %}
+
+                {% for fields in formset.empty_form.visible_fields %}
+                <td>{{fields}}</td>
+                {% endfor %}
+            </tr>
+                                                </script>
+                                            <div class="modal-body-table variant-table" id="variant-table"
+                                                style="display: block; ">
                                                 <div class="table-responsive">
                                                     <table class="table">
                                                         <thead>
-                                                        <tr>
-                                                            <th>Variantion</th>
-                                                            <th>Variant Value</th>
-                                                            <th>SKU</th>
-                                                            <th>Quantity</th>
-                                                            <th>Price</th>
-                                                            <th class="no-sort">Action</th>
-                                                        </tr>
+                                                            <tr style="gap: 10px">
+                                                                <th>Code ref <span
+                                                                        style="color: #fff">jjjjjjjjjjj</span></th>
+                                                                <th>Variation <span
+                                                                        style="color: #fff">jjjjjjjjjjju</span></th>
+                                                                <th style="width: 500px !important;">Qté vente</th>
+                                                                <th>PU <span
+                                                                        style="color: #fff">jjjjjjjjjjjuuuuuuuuuu</span>
+                                                                </th>
+                                                                <th>Expire ?</th>
+                                                                <th>Date exp.<span
+                                                                        style="color: #fff">jjjjjjjjjjjuuuu</span></th>
+                                                                <th>Code-barre <span
+                                                                        style="color: #fff">jjjjjjjjjjjuuuuuuuuuu</span>
+                                                                </th>
+                                                                <th>Statut</th>
+                                                                <th>Supprimer ?</th>
+
+                                                            </tr>
                                                         </thead>
-                                                        <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control"
-                                                                           value="color">
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control" value="red">
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control"
-                                                                           value="1234">
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="product-quantity">
-                                                                    <span class="quantity-btn"><i
-                                                                            data-feather="minus-circle"
-                                                                            class="feather-search"></i></span>
-                                                                    <input type="text" class="quntity-input" value="2">
-                                                                    <span class="quantity-btn">+<i
-                                                                            data-feather="plus-circle"
-                                                                            class="plus-circle"></i></span>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control"
-                                                                           value="50000">
-                                                                </div>
-                                                            </td>
-                                                            <td class="action-table-data">
-                                                                <div class="edit-delete-action">
-                                                                    <div class="input-block add-lists">
-                                                                        <label class="checkboxs">
-                                                                            <input type="checkbox" checked>
-                                                                            <span class="checkmarks"></span>
-                                                                        </label>
+                                                        <tbody id="item-variants">
+                                                            {% for error in formset.non_form_errors %}
+                                                            <span style="color: red">{{ error }}</span>
+                                                            {% endfor %}
+                                                            {% for formss in formset %}
+                                                            {{ formss.management_form }}
+                                                            <tr id="variants-{{ forloop.counter0 }}" class="hide_all ">
+
+                                                                {{ formss.id }}
+                                                                {% for field in formss.visible_fields %}
+                                                                <td>
+                                                                    {{field}}
+
+                                                                    {% for error in field.errors %}
+                                                                    <span style="color: red">{{ error }}</span>
+                                                                    {% endfor %}
+
+                                                                    {% comment %} {{ field.DELETE }} {% endcomment %}
+                                                                </td>
+                                                                {% endfor %}
+
+                                                                {% comment %} for delete {% endcomment %}
+                                                                {% if formss.instance.pk %}
+                                                                <td>
+                                                                    <button type="button" class="btn btn-danger"
+                                                                        data-toggle="modal"
+                                                                        data-target="#exampleModal{{formss.instance.pk}}">
+                                                                        Delete
+                                                                    </button>
+                                                                    <!-- Modal -->
+                                                                    <div class="modal fade"
+                                                                        id="exampleModal{{formss.instance.pk}}"
+                                                                        tabindex="-1" role="dialog"
+                                                                        aria-labelledby="exampleModalLabel{{formss.instance.pk}}"
+                                                                        aria-hidden="true">
+                                                                        <div class="modal-dialog" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title"
+                                                                                        id="exampleModalLabel{{formss.instance.pk}}">
+                                                                                        Are
+                                                                                        Your Sure You Want To Delete
+                                                                                        This?</h5>
+                                                                                    <button type="button" class="close"
+                                                                                        data-dismiss="modal"
+                                                                                        aria-label="Close">
+                                                                                        <span
+                                                                                            aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <a href="{% url 'products:delete_variant' formss.instance.pk %}"
+                                                                                        type="button"
+                                                                                        class="btn btn-primary">Yes,
+                                                                                        Delete</a>
+                                                                                    <button type="button"
+                                                                                        class="btn btn-secondary"
+                                                                                        data-dismiss="modal">Close
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                    <a class="me-2 p-2" href="javascript:void(0);"
-                                                                       data-bs-toggle="modal"
-                                                                       data-bs-target="#add-variation">
-                                                                        <i data-feather="plus" class="feather-edit"></i>
-                                                                    </a>
-                                                                    <a class="confirm-text p-2"
-                                                                       href="javascript:void(0);">
-                                                                        <i data-feather="trash-2"
-                                                                           class="feather-trash-2"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control"
-                                                                           value="color">
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control"
-                                                                           value="black">
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control"
-                                                                           value="2345">
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="product-quantity">
-                                                                    <span class="quantity-btn"><i
-                                                                            data-feather="minus-circle"
-                                                                            class="feather-search"></i></span>
-                                                                    <input type="text" class="quntity-input" value="3">
-                                                                    <span class="quantity-btn">+<i
-                                                                            data-feather="plus-circle"
-                                                                            class="plus-circle"></i></span>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div class="add-product">
-                                                                    <input type="text" class="form-control"
-                                                                           value="50000">
-                                                                </div>
-                                                            </td>
-                                                            <td class="action-table-data">
-                                                                <div class="edit-delete-action">
-                                                                    <div class="input-block add-lists">
-                                                                        <label class="checkboxs">
-                                                                            <input type="checkbox" checked>
-                                                                            <span class="checkmarks"></span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <a class="me-2 p-2" href="#" data-bs-toggle="modal"
-                                                                       data-bs-target="#edit-units">
-                                                                        <i data-feather="plus" class="feather-edit"></i>
-                                                                    </a>
-                                                                    <a class="confirm-text p-2"
-                                                                       href="javascript:void(0);">
-                                                                        <i data-feather="trash-2"
-                                                                           class="feather-trash-2"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
+                                                                </td>
+                                                                {% endif %}
+                                                            </tr>
+                                                            {% endfor %}
                                                         </tbody>
                                                     </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-card-one accordion" id="accordionExample4">
-                        <div class="accordion-item">
-                            <div class="accordion-header" id="headingFour">
-                                <div class="accordion-button" data-bs-toggle="collapse" data-bs-target="#collapseFour"
-                                     aria-controls="collapseFour">
-                                    <div class="text-editor add-list">
-                                        <div class="addproduct-icon list">
-                                            <h5><i data-feather="list" class="add-info"></i><span>Custom Fields</span>
-                                            </h5>
-                                            <a href="javascript:void(0);"><i data-feather="chevron-down"
-                                                                             class="chevron-down-add"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="collapseFour" class="accordion-collapse collapse show"
-                                 aria-labelledby="headingFour" data-bs-parent="#accordionExample4">
-                                <div class="accordion-body">
-                                    <div class="text-editor add-list add">
-                                        <div class="custom-filed">
-                                            <div class="input-block add-lists">
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>Warranties
-                                                </label>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>Manufacturer
-                                                </label>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>Expiry
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="input-blocks add-product">
-                                                    <label>Discount Type</label>
-                                                    <select class="select">
-                                                        <option>Choose</option>
-                                                        <option>Percentage</option>
-                                                        <option>Cash</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="input-blocks add-product">
-                                                    <label>Quantity Alert</label>
-                                                    <input type="text" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <label>Manufactured Date</label>
-                                                    <div class="input-groupicon calender-input">
-                                                        <i data-feather="calendar" class="info-img"></i>
-                                                        <input type="text" class="datetimepicker"
-                                                               placeholder="Choose Date">
+                                                    <div class="row">
+                                                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                                            <a href="#" id="add-variant-button"
+                                                                class="btn btn-secondary add-variants mt-2 mb-2">Ajouter
+                                                                une variante</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4 col-sm-6 col-12">
-                                                <div class="input-blocks">
-                                                    <label>Expiry On</label>
-                                                    <div class="input-groupicon calender-input">
-                                                        <i data-feather="calendar" class="info-img"></i>
-                                                        <input type="text" class="datetimepicker"
-                                                               placeholder="Choose Date">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {% endwith %}
                                         </div>
                                     </div>
                                 </div>
@@ -616,85 +257,114 @@ New</span></a>
                         </div>
                     </div>
                 </div>
+
             </div>
             <div class="col-lg-12">
                 <div class="btn-addproduct mb-4">
-                    <button type="button" class="btn btn-cancel me-2">Cancel</button>
-                    <button type="submit" class="btn btn-submit">Save Product</button>
+                    <button type="button" class="btn btn-cancel me-2">Annuler</button>
+                    <button type="submit" class="btn btn-submit">Créer l'article</button>
                 </div>
             </div>
         </form>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script>
+
+            $(document).ready(function () {
+                // when user clicks add more btn of variants
+                $('.add-variants').click(function (ev) {
+                    ev.preventDefault();
+                    var count = $('#item-variants').children().length;
+                    var tmplMarkup = $('#variants-template').html();
+                    var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+                    $('#item-variants').append(compiledTmpl);
+
+                    // update form count
+                    $('#id_variants-TOTAL_FORMS').attr('value', count + 1);
+                });
+                radio = document.getElementsByName("productType")
+
+                if (radio.item(0).checked) {
+                    document.getElementById("add-variant-button").style.display = "none";
+                } else {
+                    document.getElementById("add-variant-button").style.display = "block";
+                }
+            });
+
+            function getValue() {
+                radio = document.getElementsByName("productType")
+
+                if (radio.item(0).checked) {
+                    document.getElementById("add-variant-button").style.display = "none";
+                } else {
+                    document.getElementById("add-variant-button").style.display = "block";
+                }
+
+
+            }
+        </script>
+
 
     </div>
 </div>
 </div>
 
 
-{% endblock  %}
+{% endblock %}
 
 {% block modal %}
-<div class="modal fade" id="add-units-category">
+<div class="modal fade" id="add-category">
     <div class="modal-dialog modal-dialog-centered custom-modal-two">
         <div class="modal-content">
             <div class="page-wrapper-new p-0">
                 <div class="content">
                     <div class="modal-header border-0 custom-modal-header">
                         <div class="page-title">
-                            <h4>Add New Category</h4>
+                            <h4>Créer une catégorie</h4>
                         </div>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <button
+                                type="button"
+                                class="close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                        >
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body custom-modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="modal-footer-btn">
-                            <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
-                            <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
-                        </div>
+                        <form id="addCategoryForm" method="post" action="{% url "article:add_category" %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="csrfmiddlewaretoken" value="NlWVwolcXHLleEvY46OdMQ7JqLw5QBleE2bzViguLSzG9vizOw7shIfGBruG26Oi">
+
+                            <div class="mb-3">
+                                <label class="form-label">Categorie</label>
+                                <input type="text" name="name" maxlength="250" class="form-control" required="" id="id_name">
+                                <div class="help-block"></div>
+                            </div>
+
+                            <div class="mb-0">
+                                <div class="status-toggle modal-status d-flex justify-content-between align-items-center">
+                                    <span class="status-label">Statut</span>
+                                    <input type="checkbox" name="status" class="check" id="status" checked="">
+                                    <label for="status" class="checktoggle"></label>
+                                </div>
+                            </div>
+                            <div class="modal-footer-btn">
+                                <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-submit">
+                                    Créer la catégorie
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-<div class="modal fade" id="add-units-brand">
-    <div class="modal-dialog modal-dialog-centered custom-modal-two">
-        <div class="modal-content">
-            <div class="page-wrapper-new p-0">
-                <div class="content">
-                    <div class="modal-header border-0 custom-modal-header">
-                        <div class="page-title">
-                            <h4>Add New Brand</h4>
-                        </div>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body custom-modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Brand</label>
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="modal-footer-btn">
-                            <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
-                            <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <div class="modal fade" id="add-unit">
     <div class="modal-dialog modal-dialog-centered custom-modal-two">
         <div class="modal-content">
@@ -702,169 +372,48 @@ New</span></a>
                 <div class="content">
                     <div class="modal-header border-0 custom-modal-header">
                         <div class="page-title">
-                            <h4>Add Unit</h4>
+                            <h4>Créer une unité</h4>
                         </div>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <button
+                                type="button"
+                                class="close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                        >
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body custom-modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Unit</label>
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="modal-footer-btn">
-                            <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
-                            <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                        <form id="addCategoryForm" action="{% url 'article:add_unity' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="csrfmiddlewaretoken" value="nfSpSBcml7mB6DvFU2CzvhH5xxWQBbP6eW73hv7E9iaW1uigEsVO09P2IdUrNGia">
+                            <div class="mb-3">
+                                <label class="form-label">Libellé unité</label>
+                                <input type="text" name="unit" maxlength="250" class="form-control" required="" id="id_unit">
+                                <div class="help-block"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Abréviation</label>
+                                <input type="text" name="unitTag" maxlength="3" class="form-control" required="" id="id_unitTag">
+                                <div class="help-block"></div>
+                            </div>
 
-
-<div class="modal fade" id="add-variation">
-    <div class="modal-dialog modal-dialog-centered custom-modal-two">
-        <div class="modal-content">
-            <div class="page-wrapper-new p-0">
-                <div class="content">
-                    <div class="modal-header border-0 custom-modal-header">
-                        <div class="page-title">
-                            <h4>Add Variation</h4>
-                        </div>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body custom-modal-body">
-                        <div class="modal-title-head people-cust-avatar">
-                            <h6>Variant Thumbnail</h6>
-                        </div>
-                        <div class="new-employee-field">
-                            <div class="profile-pic-upload">
-                                <div class="profile-pic">
-                                    <span><i data-feather="plus-circle" class="plus-down-add"></i> Add Image</span>
-                                </div>
-                                <div class="mb-3">
-                                    <div class="image-upload mb-0">
-                                        <input type="file">
-                                        <div class="image-uploads">
-                                            <h4>Change Image</h4>
-                                        </div>
-                                    </div>
+                            <div class="mb-0">
+                                <div class="status-toggle modal-status d-flex justify-content-between align-items-center">
+                                    <span class="status-label">Status</span>
+                                    <input type="checkbox" name="status" class="check" id="status" checked="">
+                                    <label for="status" class="checktoggle"></label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 pe-0">
-                                <div class="mb-3">
-                                    <label class="form-label">Barcode Symbology</label>
-                                    <select class="select">
-                                        <option>Choose</option>
-                                        <option>Code34</option>
-                                    </select>
-                                </div>
+                            <div class="modal-footer-btn">
+                                <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-submit">
+                                    Créer l'unité
+                                </button>
                             </div>
-                            <div class="col-lg-6 pe-0">
-                                <div class="mb-3">
-                                    <div class="input-blocks add-product list">
-                                        <label>Item Code</label>
-                                        <input type="text" class="form-control list" value="455454478844">
-                                        <button type="submit" class="btn btn-primaryadd">
-                                            Generate Code
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="input-blocks image-upload-down">
-                                    <div class="image-upload download">
-                                        <input type="file">
-                                        <div class="image-uploads">
-                                            <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/download-img.png"
-                                                 alt="img">
-                                            <h4>Drag and drop a <span>file to upload</span></h4>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="accordion-body">
-                                    <div class="text-editor add-list add">
-                                        <div class="col-lg-12">
-                                            <div class="add-choosen mb-3">
-                                                <div class="phone-img ms-0">
-                                                    <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/products/phone-add-2.png"
-                                                         alt="image">
-                                                    <a href="javascript:void(0);"><i data-feather="x"
-                                                                                     class="x-square-add remove-product"></i></a>
-                                                </div>
-                                                <div class="phone-img">
-                                                    <img src="https://dreamspos.dreamstechnologies.com/html/template/assets/img/products/phone-add-1.png"
-                                                         alt="image">
-                                                    <a href="javascript:void(0);"><i data-feather="x"
-                                                                                     class="x-square-add remove-product"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 pe-0">
-                                <div class="mb-3">
-                                    <label class="form-label">Quantity</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 pe-0">
-                                <div class="mb-3">
-                                    <label class="form-label">Quantity Alert</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-lg-6 pe-0">
-                                <div class="mb-3">
-                                    <label class="form-label">Tax Type</label>
-                                    <select class="select">
-                                        <option>Choose</option>
-                                        <option>Direct</option>
-                                        <option>Indirect</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 pe-0">
-                                <div class="mb-3">
-                                    <label class="form-label">Tax </label>
-                                    <select class="select">
-                                        <option>Choose</option>
-                                        <option>Income Tax</option>
-                                        <option>Service Tax</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12 pe-0">
-                                <div class="mb-3">
-                                    <label class="form-label">Discount Type </label>
-                                    <select class="select">
-                                        <option>Choose</option>
-                                        <option>Percentage</option>
-                                        <option>Early Payment</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12 pe-0">
-                                <div>
-                                    <label class="form-label">Discount Value</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer-btn">
-                            <a href="javascript:void(0);" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</a>
-                            <a href="https://dreamspos.dreamstechnologies.com/html/template/add-product.html"
-                               class="btn btn-submit">Submit</a>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

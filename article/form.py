@@ -3,7 +3,9 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms import inlineformset_factory
 
-from .models import Product, Variantes
+from stock.models import Stock
+
+from .models import Product, ProductCodeBarre, Variantes
 
 
 class ProductForm(forms.ModelForm):
@@ -21,7 +23,11 @@ class ProductForm2(forms.ModelForm):
         model = Product
         fields = '__all__'
 
+class ImageForm(forms.ModelForm):
 
+    class Meta:
+        model = Stock
+        fields = '__all__'
 class VariantForm(forms.ModelForm):
 
     class Meta:
@@ -72,5 +78,10 @@ class VariantForm(forms.ModelForm):
 
 VariantFormSet = inlineformset_factory(
     Product, Variantes, form=VariantForm,
+    extra=1, can_delete=True, can_delete_extra=True
+)
+
+ImageFormSet = inlineformset_factory(
+    Product, Stock, form=ImageForm,
     extra=1, can_delete=True, can_delete_extra=True
 )
