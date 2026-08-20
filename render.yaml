@@ -1,4 +1,4 @@
-﻿# =============================================================================
+# =============================================================================
 # Render Blueprint -- Application GSM (plan GRATUIT)
 # =============================================================================
 # Deploiement : connecter ce repo sur render.com -> "New Blueprint"
@@ -13,7 +13,7 @@ services:
     name: gsm-app
     runtime: docker
     dockerfilePath: ./Dockerfile
-    dockerCommand: daphne -b 0.0.0.0 -p 10000 config.asgi:application
+    dockerCommand: ./start.sh
     plan: free
     region: frankfurt
     healthCheckPath: /users/login/
@@ -28,6 +28,12 @@ services:
         fromDatabase:
           name: gsm-db
           property: connectionString
+      - key: ADMIN_USERNAME
+        value: "admin"
+      - key: ADMIN_PASSWORD
+        value: "Admin12345!"
+      - key: ADMIN_EMAIL
+        value: "admin@gsm.local"
       # Email SMTP (optionnel - a ajouter manuellement dans le dashboard Render)
       # - key: EMAIL_HOST
       #   value: smtp.gmail.com
