@@ -13,5 +13,6 @@ python manage.py init_admin
 echo "==> Verification des alertes d'expiration..."
 python manage.py scan_expiration_alerts || true
 
-echo "==> Demarrage du serveur Daphne sur le port ..."
-exec daphne -b 0.0.0.0 -p "" config.asgi:application
+PORT_NUM="${PORT:-10000}"
+echo "==> Demarrage du serveur Daphne sur le port ${PORT_NUM}..."
+exec daphne -b 0.0.0.0 -p "${PORT_NUM}" config.asgi:application
