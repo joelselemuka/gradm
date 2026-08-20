@@ -122,10 +122,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "core:dashboard"
 
-REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
-# Cache : Redis en production (requis par django-ratelimit pour le comptage partagé
-# entre les workers), LocMemCache en développement si Redis n'est pas disponible.
-if os.getenv("REDIS_URL") or not DEBUG:
+REDIS_URL = os.getenv("REDIS_URL", "")
+
+# Cache : Redis si disponible, sinon LocMemCache (demo sans Redis)
+if REDIS_URL:
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
@@ -138,18 +138,32 @@ else:
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         }
     }
-# Channel Layers utilise toujours Redis.
-# En développement sans Redis, définir REDIS_URL=redis://localhost:6379/0
-# et démarrer Redis localement (docker run -p 6379:6379 redis:7-alpine).
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [REDIS_URL]},
-    }
-}
 
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+# Channel Layers : Redis si disponible, sinon InMemory (WebSockets locaux uniquement)
+if REDIS_URL:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {"hosts": [REDIS_URL]},
+        }
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        }
+    }
+
+# Celery : Redis si disponible, sinon execution synchrone (taches dans le meme process)
+if REDIS_URL:
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
+    CELERY_TASK_ALWAYS_EAGER = False
+else:
+    CELERY_TASK_ALWAYS_EAGER = True   # Les taches Celery s'executent en synchrone
+    CELERY_BROKER_URL = "memory://"
+    CELERY_RESULT_BACKEND = "cache+memory://"
+
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULE = {"daily-sales-report": {"task": "apps.reports.tasks.send_daily_sales_report", "schedule": 86400}, "expiry-alerts": {"task": "apps.inventory.tasks.notify_expiring_lots", "schedule": 86400}}
 EMAIL_HOST = os.getenv("EMAIL_HOST", "")

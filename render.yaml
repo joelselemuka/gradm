@@ -1,28 +1,25 @@
+﻿# =============================================================================
+# Render Blueprint -- Application GSM (plan GRATUIT)
 # =============================================================================
-# Render Blueprint — Application GSM
-# Documentation : https://render.com/docs/blueprint-spec
-# =============================================================================
-# Déploiement : connecter ce repo sur render.com → "New Blueprint"
-# Render créera automatiquement : Web Service + PostgreSQL + Redis
+# Deploiement : connecter ce repo sur render.com -> "New Blueprint"
+# Render creera : 1 Web Service + 1 PostgreSQL
+# NOTE : Redis non disponible en gratuit -> taches Celery synchrones en demo
 # =============================================================================
 
 services:
 
-  # ─────────────────────────────────────────────────────────────────────── #
-  # Application Web Django (ASGI / Daphne)                                  #
-  # ─────────────────────────────────────────────────────────────────────── #
+  # Application Web Django (ASGI / Daphne)
   - type: web
     name: gsm-app
     runtime: docker
     dockerfilePath: ./Dockerfile
-    # Commande de démarrage dans le conteneur
     dockerCommand: daphne -b 0.0.0.0 -p 10000 config.asgi:application
     plan: free
-    region: frankfurt   # Choisir la région la plus proche du client
-    healthCheckPath: /accounts/login/
+    region: frankfurt
+    healthCheckPath: /users/login/
     envVars:
       - key: DJANGO_SECRET_KEY
-        generateValue: true       # Render génère automatiquement une clé sécurisée
+        generateValue: true
       - key: DJANGO_DEBUG
         value: "false"
       - key: DJANGO_ALLOWED_HOSTS
@@ -31,14 +28,7 @@ services:
         fromDatabase:
           name: gsm-db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: gsm-redis
-          type: redis
-          property: connectionString
-      - key: RENDER_EXTERNAL_HOSTNAME
-        value: gsm-app.onrender.com   # Remplacer par votre vrai nom Render
-      # Email SMTP (optionnel — ajouter manuellement dans le dashboard Render)
+      # Email SMTP (optionnel - a ajouter manuellement dans le dashboard Render)
       # - key: EMAIL_HOST
       #   value: smtp.gmail.com
       # - key: EMAIL_PORT
@@ -46,55 +36,16 @@ services:
       # - key: EMAIL_HOST_USER
       #   value: it.kolwezi@gmail.com
       # - key: EMAIL_HOST_PASSWORD
-      #   sync: false   # Saisir manuellement dans le dashboard
+      #   sync: false
       # - key: DEFAULT_FROM_EMAIL
       #   value: gradmsupermarket@gmail.com
       # - key: ADMIN_REPORT_EMAIL
       #   value: joelselemuka100@gmail.com
 
-  # ─────────────────────────────────────────────────────────────────────── #
-  # Worker Celery (tâches asynchrones)                                       #
-  # ─────────────────────────────────────────────────────────────────────── #
-  - type: worker
-    name: gsm-celery-worker
-    runtime: docker
-    dockerfilePath: ./Dockerfile
-    dockerCommand: celery -A config worker -l INFO --concurrency 1
-    plan: free
-    region: frankfurt
-    envVars:
-      - key: DJANGO_SECRET_KEY
-        fromService:
-          name: gsm-app
-          type: web
-          envVarKey: DJANGO_SECRET_KEY
-      - key: DJANGO_DEBUG
-        value: "false"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: gsm-db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: gsm-redis
-          type: redis
-          property: connectionString
-
-# ─────────────────────────────────────────────────────────────────────────── #
-# Base de données PostgreSQL (plan free = 90 jours, ensuite payant)           #
-# ─────────────────────────────────────────────────────────────────────────── #
+# PostgreSQL (plan free = 90 jours)
 databases:
   - name: gsm-db
     plan: free
     region: frankfurt
     databaseName: supermarket
     user: supermarket
-
-# ─────────────────────────────────────────────────────────────────────────── #
-# Redis (plan free disponible)                                                 #
-# ─────────────────────────────────────────────────────────────────────────── #
-  - type: redis
-    name: gsm-redis
-    plan: free
-    region: frankfurt
-    maxmemoryPolicy: allkeys-lru
