@@ -1,0 +1,61 @@
+{# Fragment HTMX : solde général de la dernière session clôturée #}
+{% if balance %}
+{# ── Toggle Alpine avec solde disponible ──────────────────────────────────── #}
+<div class="prev-balance-toggle"
+     x-data="{
+       active: false,
+       local:   {{ balance.local|stringformat:'.2f' }},
+       foreign: {{ balance.foreign|stringformat:'.2f' }}
+     }"
+     x-init="$watch('active', v => {
+       let fc  = document.getElementById('id_opening_local_amount');
+       let usd = document.getElementById('id_opening_foreign_amount');
+       if (v) {
+         fc.value  = local.toFixed(2);
+         usd.value = foreign.toFixed(2);
+         fc.readOnly  = true;
+         usd.readOnly = true;
+         fc.classList.add('field-prefilled');
+         usd.classList.add('field-prefilled');
+       } else {
+         fc.value  = '';
+         usd.value = '';
+         fc.readOnly  = false;
+         usd.readOnly = false;
+         fc.classList.remove('field-prefilled');
+         usd.classList.remove('field-prefilled');
+       }
+     })">
+
+  <label class="toggle-switch" for="id_use_previous_balance">
+    <input type="checkbox"
+           id="id_use_previous_balance"
+           name="use_previous_balance"
+           x-model="active">
+    <span class="toggle-slider"></span>
+  </label>
+
+  <div class="toggle-info">
+    <span class="toggle-label">Utiliser le solde de la session précédente</span>
+    <span class="toggle-desc">
+      Dernière session de <strong>{{ balance.session.register.name }}</strong>
+      clôturée par <strong>{{ balance.session.cashier.get_full_name|default:balance.session.cashier.username }}</strong>
+      le {{ balance.session.closed_at|date:"d/m/Y à H:i" }}.
+    </span>
+    <span class="toggle-balance">
+      💰 {{ balance.local|stringformat:'.0f' }} FC &nbsp;+&nbsp; {{ balance.foreign|stringformat:'.2f' }} USD
+    </span>
+  </div>
+</div>
+
+{% else %}
+{# ── Pas de session précédente ────────────────────────────────────────────── #}
+<div class="prev-balance-toggle prev-balance-empty">
+  <div class="toggle-info" style="opacity:.65">
+    <span class="toggle-label">Utiliser le solde de la session précédente</span>
+    <span class="toggle-balance" style="background:#f1f5f9;color:#94a3b8">
+      — Aucune session clôturée pour cette caisse
+    </span>
+  </div>
+</div>
+{% endif %}

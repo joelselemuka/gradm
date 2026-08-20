@@ -1,0 +1,7 @@
+{% load formatting %}
+{% load l10n %}
+<h2 id="pos-draft-invoice-number" class="pos-invoice-number" hx-swap-oob="outerHTML">{{ draft_invoice_number|default:'Nouvelle vente' }}</h2>
+<span id="pos-cart-count" hx-swap-oob="innerHTML">{{ cart_items|length }}</span>
+<span id="pos-cart-total" class="pos-cart-total money" hx-swap-oob="outerHTML">{{ cart_total|money }}</span>
+<div id="pos-cart-subtotal" data-subtotal="{% localize off %}{{ cart_total }}{% endlocalize %}" hx-swap-oob="outerHTML" class="pos-total-row"><span>Sous-total</span><strong class="money">{{ cart_total|money }}</strong></div>
+<button id="pos-next-button" {% if not cart_items %}disabled{% endif %} class="button button-primary pos-next-button" type="submit" hx-swap-oob="outerHTML"><span>Suivant</span><span aria-hidden="true">→</span></button>

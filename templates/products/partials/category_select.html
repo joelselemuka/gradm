@@ -1,0 +1,4 @@
+<select id="id_category" name="category" required {% if oob %}hx-swap-oob="outerHTML"{% endif %}>
+  <option value="">Sélectionner une catégorie</option>
+  {% for category in categories %}<option value="{{ category.pk }}" {% if selected_category|stringformat:'s' == category.pk|stringformat:'s' %}selected{% endif %}>{{ category.name }}</option>{% endfor %}
+</select>

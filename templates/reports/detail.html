@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load formatting %}
+{% block heading %}Rapport général{% endblock %}
+{% block content %}
+<div class="report-actions no-print">
+  <a class="button button-secondary" href="{% url 'reports:home' %}">Retour aux rapports</a>
+  <button class="button button-primary" type="button" onclick="window.print()">Imprimer le rapport</button>
+</div>
+
+<article class="written-report">
+  <header class="written-report-header">
+    <p class="eyebrow">RAPPORT JOURNALIER</p>
+    <h2>Rapport général de vente et du cash du {{ report.day|date:'d/m/Y' }}</h2>
+    <div class="written-report-session-list">
+      <strong>Vente effectuée par (session)</strong>
+      {% for item in report.session_rows %}
+        <span>{{ item.session.register.name }} · {{ item.session.cashier.username }} · session {{ item.session.pk }}</span>
+      {% empty %}
+        <span>Aucune session enregistrée.</span>
+      {% endfor %}
+    </div>
+  </header>
+
+  <section class="written-report-section">
+    <h3><span>1</span>Vente du jour</h3>
+    <div class="written-report-line"><span>Total vendu</span><strong>{{ report.total_sales|money }} FC</strong></div>
+
+    <div class="written-report-subsection">
+      <h4>Dépenses</h4>
+      <table class="written-report-table">
+        <thead><tr><th>Motif</th><th>Session</th><th class="number">Montant</th></tr></thead>
+        <tbody>
+          {% for expense in report.expenses %}
+            <tr><td>{{ expense.description|default:expense.category }}</td><td>{{ expense.cash_session.register.name|default:'—' }}</td><td class="number">{{ expense.amount|money }} FC</td></tr>
+          {% empty %}
+            <tr><td colspan="3">Aucune dépense approuvée.</td></tr>
+          {% endfor %}
+        </tbody>
+        <tfoot><tr><th colspan="2">Total sortie</th><th class="number">{{ report.total_expenses|money }} FC</th></tr></tfoot>
+      </table>
+    </div>
+    <div class="written-report-line"><span>Solde vente</span><strong>{{ report.sales_balance|money }} FC</strong></div>
+    <div class="written-report-line"><span>Versement vente</span><strong>{{ report.sales_deposit_local|money }} FC &amp; {{ report.sales_deposit_foreign|money }} USD</strong></div>
+  </section>
+
+  <section class="written-report-section">
+    <h3><span>2</span>Cash du jour</h3>
+    <div class="written-report-line"><span>Cash du jour</span><strong>{{ report.opening_local|money }} FC &amp; {{ report.opening_foreign|money }} USD</strong></div>
+
+    <div class="written-report-subsection">
+      <h4>Sorties</h4>
+      <table class="written-report-table">
+        <thead><tr><th>Libellé</th><th>Session</th><th class="number">FC</th><th class="number">USD</th></tr></thead>
+        <tbody>
+          {% for movement in report.cash_outings %}
+            <tr><td>{{ movement.label|default:movement.description }}</td><td>{{ movement.session.register.name }}</td><td class="number">{{ movement.amount|money }}</td><td class="number">{{ movement.foreign_amount|default:0|money }}</td></tr>
+          {% empty %}
+            <tr><td colspan="4">Aucune sortie cash.</td></tr>
+          {% endfor %}
+        </tbody>
+        <tfoot><tr><th colspan="2">Total sorties</th><th class="number">{{ report.outings_local|money }}</th><th class="number">{{ report.outings_foreign|money }}</th></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="written-report-subsection">
+      <h4>Entrées</h4>
+      <table class="written-report-table">
+        <thead><tr><th>Libellé</th><th>Session</th><th class="number">FC</th><th class="number">USD</th></tr></thead>
+        <tbody>
+          {% for movement in report.cash_entries %}
+            <tr><td>{{ movement.label|default:movement.description }}</td><td>{{ movement.session.register.name }}</td><td class="number">{{ movement.amount|money }}</td><td class="number">{{ movement.foreign_amount|default:0|money }}</td></tr>
+          {% empty %}
+            <tr><td colspan="4">Aucune entrée cash.</td></tr>
+          {% endfor %}
+        </tbody>
+        <tfoot><tr><th colspan="2">Total entrées</th><th class="number">{{ report.entries_local|money }}</th><th class="number">{{ report.entries_foreign|money }}</th></tr></tfoot>
+      </table>
+    </div>
+    <div class="written-report-line"><span>Solde cash</span><strong>{{ report.cash_balance_local|money }} FC &amp; {{ report.cash_balance_foreign|money }} USD</strong></div>
+    <div class="written-report-line"><span>Versement cash</span><strong>{{ report.cash_deposit_local|money }} FC &amp; {{ report.cash_deposit_foreign|money }} USD</strong></div>
+  </section>
+
+  <section class="written-report-section written-report-general">
+    <h3><span>3</span>Récapitulatif</h3>
+    <div class="written-report-general-grid">
+      <div><span>Solde général</span><strong>{{ report.general_balance_local|money }} FC &amp; {{ report.general_balance_foreign|money }} USD</strong></div>
+      <div><span>Solde versement</span><strong>{{ report.deposit_balance_local|money }} FC &amp; {{ report.deposit_balance_foreign|money }} USD</strong></div>
+    </div>
+    <div class="written-report-close">
+      <h3>Observation</h3>
+      <p>Solde général − solde versement</p>
+      <strong class="report-observation {% if report.difference_local == 0 and report.difference_foreign == 0 %}is-conforme{% elif report.difference_local > 0 or report.difference_foreign > 0 %}is-surplus{% else %}is-manquant{% endif %}">
+        FC : {{ report.difference_status_local }} de {{ report.difference_local_abs|money }} · USD : {{ report.difference_status_foreign }} de {{ report.difference_foreign_abs|money }}
+      </strong>
+    </div>
+  </section>
+</article>
+{% endblock %}

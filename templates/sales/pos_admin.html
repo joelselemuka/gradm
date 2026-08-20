@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block heading %}Point de vente{% endblock %}
+{% block content %}
+<section class="management-heading">
+  <div><p class="eyebrow">VUE ADMINISTRATEUR · {{ period_label|upper }}</p><h2>Activité de vente</h2><p>Vue de contrôle uniquement. L’encaissement reste réservé aux caissiers.</p></div>
+  <a class="button button-secondary" href="{% url 'sales:invoice-list' %}">Voir les factures</a>
+</section>
+
+<form class="dashboard-filter-bar" method="get">
+  <label>Période
+    <select name="period">
+      <option value="day" {% if selected_period == 'day' %}selected{% endif %}>Jour</option>
+      <option value="week" {% if selected_period == 'week' %}selected{% endif %}>Semaine</option>
+      <option value="month" {% if selected_period == 'month' %}selected{% endif %}>Mois</option>
+      <option value="year" {% if selected_period == 'year' %}selected{% endif %}>Année</option>
+      <option value="custom" {% if selected_period == 'custom' %}selected{% endif %}>Intervalle personnalisé</option>
+    </select>
+  </label>
+  <label>Date de référence<input type="date" name="date" value="{{ selected_date|date:'Y-m-d' }}"></label>
+  <label>Du<input type="date" name="date_from" value="{{ date_from|date:'Y-m-d' }}"></label>
+  <label>Au<input type="date" name="date_to" value="{{ date_to|date:'Y-m-d' }}"></label>
+  <button class="button button-primary" type="submit">Appliquer</button>
+  <a class="button button-secondary" href="{% url 'sales:pos' %}">Réinitialiser</a>
+  <span class="filter-range">{{ range_start|date:'d/m/Y' }} → {{ range_end|date:'d/m/Y' }}</span>
+</form>
+
+<section class="metric-grid">
+  <article class="metric-card metric-card-primary"><span class="metric-label">Factures validées</span><strong class="metric-value">{{ invoice_count }}</strong><p>{{ period_label }} sélectionné{{ period_label|pluralize }}</p></article>
+  <article class="metric-card"><span class="metric-label">Montant brut</span><strong class="metric-value money">{{ gross_total|floatformat:2 }}</strong><p>Avant réductions</p></article>
+  <article class="metric-card"><span class="metric-label">Réductions</span><strong class="metric-value money">{{ discount_total|floatformat:2 }}</strong><p>Promotions et remises</p></article>
+  <article class="metric-card"><span class="metric-label">Net encaissé</span><strong class="metric-value money">{{ net_total|floatformat:2 }}</strong><p>Ventes validées</p></article>
+</section>
+
+<section class="panel" style="margin-top:15px">
+  <div class="panel-header"><div><p class="eyebrow">{{ period_label|upper }} · {{ range_start|date:'d/m/Y' }} AU {{ range_end|date:'d/m/Y' }}</p><h3>Dernières opérations</h3></div></div>
+  <div class="data-table-wrap"><table class="data-table"><thead><tr><th>Facture</th><th>Date / heure</th><th>Caisse</th><th>Caissier</th><th class="number">Brut</th><th class="number">Réduction</th><th class="number">Net</th></tr></thead><tbody>{% for invoice in invoices %}<tr><td><a class="table-link" href="{% url 'sales:invoice-detail' invoice.pk %}">{{ invoice.number }}</a></td><td>{{ invoice.created_at|date:'d/m/Y H:i' }}</td><td>{{ invoice.cash_session.register.name|default:'—' }}</td><td>{{ invoice.cashier.username }}</td><td class="money number">{{ invoice.subtotal|floatformat:2 }}</td><td class="money number">{{ invoice.promotion_discount|add:invoice.manual_discount|floatformat:2 }}</td><td class="money number">{{ invoice.total|floatformat:2 }}</td></tr>{% empty %}<tr><td class="empty-cell" colspan="7">Aucune vente validée sur cette période.</td></tr>{% endfor %}</tbody></table></div>{% include 'partials/pagination.html' with page_obj=invoices %}
+</section>
+{% endblock %}

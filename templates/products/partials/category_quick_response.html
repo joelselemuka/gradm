@@ -1,0 +1,2 @@
+{% include 'products/partials/category_select.html' with oob=True %}
+<p id="category-quick-feedback" hx-swap-oob="outerHTML" class="quick-feedback {% if error %}is-error{% else %}is-success{% endif %}">{% if error %}{{ error }}{% else %}{{ message }}{% endif %}</p>

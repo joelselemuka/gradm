@@ -1,0 +1,108 @@
+.toolbar-filters{display:grid;grid-template-columns:minmax(180px,1.4fr) repeat(2,minmax(145px,.7fr)) auto;gap:12px;align-items:end;padding:18px 20px;border-bottom:1px solid #edf0f2;background:#fcfcfd}.toolbar-filters label{margin:0}.toolbar-filters .button{height:42px}.form-grid,.split-workspace,.report-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:15px}.form-grid .pro-form h3,.split-workspace .pro-form h3{margin:5px 0 8px;font-size:16px}.form-help{margin:0 0 20px;color:#7c8490;font-size:12px}.pro-form hr{margin:24px 0;border:0;border-top:1px solid #edf0f2}.decision-menu{position:relative;text-align:left}.decision-menu summary{cursor:pointer;color:#59616e;font-size:11px;text-decoration:underline}.decision-menu form{margin:7px 0;padding:9px;border:1px solid #e4e7eb;border-radius:8px;background:#fff}.decision-menu label{font-size:10px}.decision-menu input{padding:6px 7px}.danger{color:#bf303d}.report-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.users-table small,.data-table small{display:block}.users-panel+.split-workspace{margin-top:15px}.cash-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#edf0f2}.cash-summary-grid>div{display:grid;gap:8px;padding:18px 20px;background:#fff}.cash-summary-grid span{color:#7b8490;font-size:11px}.cash-summary-grid strong{color:#273342;font-size:15px}@media(max-width:900px){.toolbar-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.split-workspace,.form-grid,.report-detail-grid{grid-template-columns:1fr}.cash-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.toolbar-filters{grid-template-columns:1fr;padding:15px}.toolbar-filters .button{width:100%}.form-grid,.split-workspace,.report-detail-grid{gap:12px}.users-table{min-width:680px}}@media(max-width:520px){.cash-summary-grid{grid-template-columns:1fr}}
+.pagination{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;border-top:1px solid #edf0f2}.pagination-link{display:grid;place-items:center;min-width:34px;height:34px;border:1px solid #dfe5eb;border-radius:8px;background:#fff;color:#273342;text-decoration:none}.pagination-link:hover{border-color:#1976d2;color:#1976d2}.pagination-status{color:#687482;font-size:12px;font-weight:700}.invoice-page{display:grid;gap:18px}.invoice-page-header{display:flex;align-items:center;justify-content:space-between;gap:18px}.invoice-page-header h2{margin:5px 0;font-size:26px}.invoice-actions{display:flex;align-items:center;gap:9px}.invoice-detail-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.65fr);gap:15px}.invoice-document{overflow:hidden}.invoice-document-head{display:flex;align-items:flex-start;justify-content:space-between;padding:22px;border-bottom:1px solid #edf0f2}.invoice-document-head h3,.invoice-side h3{margin:4px 0;font-size:17px}.invoice-customer{display:grid;gap:3px;text-align:right}.invoice-customer span,.invoice-customer small{color:#7b8490;font-size:11px}.invoice-lines th,.invoice-lines td{padding:14px 18px}.invoice-lines td:first-child{min-width:220px}.invoice-lines td small{color:#7b8490;font-size:11px}.invoice-totals{display:grid;gap:10px;padding:20px 22px}.invoice-totals div{display:flex;justify-content:space-between;color:#596572;font-size:13px}.invoice-totals .discount{color:#ad4d57}.invoice-totals .invoice-total{margin-top:7px;padding-top:15px;border-top:1px solid #e4e8ed;color:#1e2b38;font-size:19px;font-weight:800}.invoice-side{display:grid;align-content:start;gap:15px}.invoice-side .panel{padding:20px}.invoice-payment,.invoice-meta-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #edf0f2;font-size:13px}.invoice-side hr{margin:18px 0;border:0;border-top:1px solid #edf0f2}.invoice-danger{border:1px solid #f0c3c7}.button-danger{border:1px solid #d66b75;background:#fff4f4;color:#a72f3a}.cash-filter-panel{margin-top:15px}@media(max-width:900px){.invoice-detail-grid{grid-template-columns:1fr}.invoice-page-header{align-items:flex-start;flex-direction:column}.invoice-actions{flex-wrap:wrap}.invoice-customer{text-align:left}}
+/* Print-ready product identification and shelf labels */
+.print-toolbar { display:flex; gap:.6rem; margin-bottom:1rem; }
+.barcode-sheet, .price-label-sheet { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
+.barcode-card, .price-label { background:#fff; border:1px solid #d8dee8; border-radius:12px; padding:1rem; text-align:center; break-inside:avoid; }
+.barcode-card h2, .price-label h2 { font-size:1rem; font-weight:500; margin:0 0 .55rem; }
+.barcode-card p { margin:.2rem 0 0; letter-spacing:.08em; font-family:monospace; }
+.price-label h2 small { display:block; font-size:.78rem; color:#657184; margin-top:.2rem; }
+.price-label strong { display:block; font-size:2.35rem; line-height:1; margin-top:.75rem; }
+.barcode-list { display:flex; flex-wrap:wrap; gap:5px; }
+.barcode-panel-heading { align-items:center; }
+.barcode-panel-heading p { margin:.35rem 0 0; }
+.barcode-variants { display:grid; gap:0; }
+.barcode-variant-card { border-top:1px solid #edf0f3; }
+.barcode-card-header { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:18px 24px 14px; }
+.barcode-product-title { display:flex; align-items:center; gap:12px; min-width:0; }
+.barcode-product-icon { display:grid; width:38px; height:38px; flex:0 0 38px; place-items:center; border-radius:10px; background:#e9f2ff; color:#1767ae; font-size:15px; font-weight:800; }
+.barcode-product-title h4 { margin:0; color:#253142; font-size:14px; }
+.barcode-product-title p { margin:4px 0 0; color:#83909c; font-size:11px; }
+.barcode-product-title p span { padding:0 3px; color:#bbc4ce; }
+.barcode-card-metrics { display:flex; align-items:center; gap:28px; flex:0 0 auto; }
+.barcode-card-metrics div { display:grid; gap:4px; text-align:right; }
+.barcode-card-metrics small { color:#8793a0; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.barcode-card-metrics strong { color:#263242; font-size:14px; }
+.barcode-card-body { padding:0 24px 16px 74px; }
+.barcode-codes-heading { display:flex; align-items:center; gap:7px; margin-bottom:9px; color:#6d7886; font-size:11px; font-weight:750; }
+.barcode-count { display:inline-grid; min-width:19px; height:19px; place-items:center; border-radius:99px; background:#eef3f8; color:#526171; font-size:10px; }
+.barcode-chip { display:inline-flex; align-items:center; gap:7px; min-height:28px; padding:5px 10px; border:1px solid #dbe4ed; border-radius:7px; background:#f8fafc; color:#334155; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; }
+.barcode-chip-dot { width:6px; height:6px; border-radius:99px; background:#22a06b; }
+.barcode-chip.is-disabled { color:#8994a1; text-decoration:line-through; }
+.barcode-chip.is-disabled .barcode-chip-dot { background:#a9b2bd; }
+.barcode-chip small { color:#8b96a3; font-family:inherit; font-size:9px; text-decoration:none; }
+.barcode-card-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:0 24px 18px; }
+.barcode-card-actions form { margin:0; }
+.barcode-card-actions .button { min-height:35px; padding:8px 12px; font-size:12px; }
+.barcode-card-actions .button span { margin-right:3px; font-size:14px; }
+.barcode-add-modal { width:min(460px, calc(100vw - 32px)); }
+.barcode-add-modal .modal-header { align-items:flex-start; }
+.barcode-add-modal .modal-header h3 { margin:3px 0 0; }
+.barcode-add-modal .modal-header p { margin:4px 0 0; }
+.barcode-add-modal form { padding:18px; }
+.modal-field { display:grid; gap:7px; color:#53606f; font-size:12px; font-weight:750; }
+.modal-field input { width:100%; box-sizing:border-box; height:40px; padding:8px 10px; border:1px solid #d4dce5; border-radius:8px; background:#fff; color:#2e3b4b; font:500 13px ui-monospace,SFMono-Regular,Consolas,monospace; }
+.modal-field input:focus { outline:0; border-color:#1976d2; box-shadow:0 0 0 3px #1976d221; }
+.modal-backdrop { position:fixed; z-index:220; inset:0; display:grid; place-items:center; padding:16px; background:#15203380; }
+.modal-card { max-width:100%; }
+.barcode-modal { width:min(780px, calc(100vw - 32px)); max-height:calc(100vh - 32px); overflow:hidden; background:#fff; border-radius:14px; box-shadow:0 24px 80px #0b14254d; }
+.barcode-modal .modal-header, .barcode-modal .modal-actions { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 18px; border-bottom:1px solid #e8edf2; }
+.barcode-modal .modal-header h3 { margin:3px 0 0; }
+.barcode-modal iframe { display:block; width:100%; height:min(58vh,520px); border:0; background:#f7f9fb; }
+.barcode-modal-preview { display:grid; gap:14px; max-height:min(58vh,520px); overflow:auto; padding:18px; background:#f7f9fb; }
+.barcode-modal-item { display:grid; justify-items:center; gap:8px; padding:14px; background:#fff; border:1px solid #e0e6ec; border-radius:9px; }
+.barcode-modal-item h4 { margin:0; color:#334155; font-size:13px; }
+.price-label-modal { width:min(620px, calc(100vw - 30px)); max-height:calc(100vh - 30px); overflow:hidden; background:#fff; border-radius:16px; box-shadow:0 24px 80px #0b14254d; }
+.price-label-modal .modal-header { padding:20px 22px 16px; }
+.price-label-modal .modal-header h3 { margin:3px 0 0; color:#1f2937; font-size:18px; font-weight:650; }
+.price-label-preview { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:14px; max-height:min(58vh,520px); overflow:auto; padding:20px; background:#f2f5f8; }
+.price-label-card { min-height:145px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 14px; border:2px solid #9ba9b8; border-radius:10px; background:#fff; box-shadow:0 3px 10px #1f29370d; text-align:center; }
+.price-label-card h2 { margin:0 0 18px; color:#334155; font-size:14px; font-weight:500; line-height:1.25; }
+.price-label-card h2 small { display:block; margin-top:4px; color:#677587; font-size:11px; font-weight:500; }
+.price-label-card strong { color:#17263a; font-size:27px; line-height:1; }
+.price-label-modal .modal-actions { display:grid; gap:9px; padding:16px 22px 20px; }
+.price-label-modal .modal-actions .button { width:100%; min-height:40px; }
+.price-label-wizard { width:min(660px, calc(100vw - 30px)); }
+.label-selection-step, .label-preview-step { min-height:0; }
+.select-all-row { display:flex; align-items:center; gap:11px; padding:15px 22px; border-bottom:1px solid #e7edf2; cursor:pointer; }
+.select-all-row input, .label-selection-row input { width:17px; height:17px; accent-color:#1767ae; }
+.select-all-row span { display:grid; gap:3px; }
+.select-all-row strong { color:#253142; font-size:13px; }
+.select-all-row small { color:#8793a0; font-size:11px; }
+.label-selection-list { max-height:min(56vh,480px); overflow:auto; padding:8px 22px; }
+.label-selection-row { display:flex; align-items:center; gap:11px; min-height:48px; border-bottom:1px solid #edf1f4; cursor:pointer; }
+.label-selection-row:last-child { border-bottom:0; }
+.selection-product-name { display:grid; flex:1; gap:2px; color:#334155; font-size:13px; font-weight:500; }
+.selection-product-name small { color:#8995a2; font-size:11px; font-weight:400; }
+.selection-product-price { color:#334155; font-size:13px; font-weight:700; }
+.barcode-modal .modal-actions { justify-content:flex-end; border-top:1px solid #e8edf2; border-bottom:0; }
+.barcode-print-sheet { display:grid; gap:10mm; }
+.barcode-preview-body { margin:0; min-height:100vh; background:#f4f6f8; }
+.barcode-preview-body .barcode-print-sheet { justify-items:center; padding:24px; }
+.price-preview-body { margin:0; min-height:100vh; background:#f4f6f8; }
+.price-print-toolbar { display:flex; gap:8px; padding:16px 20px; }
+.price-print-toolbar button { min-height:36px; padding:8px 13px; border:1px solid #d4dce5; border-radius:8px; background:#fff; color:#334155; font:600 12px Arial,sans-serif; cursor:pointer; }
+.price-print-toolbar button:first-child { border-color:#1767ae; background:#1767ae; color:#fff; }
+.barcode-print-label { width:80mm; min-height:80mm; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:5mm; background:#fff; text-align:center; break-after:auto; }
+.barcode-print-label h2 { margin:0 0 5mm; font-size:16px; line-height:1.15; }
+.barcode-print-label h2 small { display:block; margin-top:1mm; font-size:11px; font-weight:500; }
+.barcode-svg { width:70mm; }
+.barcode-svg svg { display:block; width:100%; height:auto; }
+@media (max-width:700px) { .modal-backdrop { align-items:end; padding:0; } .barcode-modal { width:100%; max-height:90vh; border-radius:15px 15px 0 0; } }
+@media (max-width:700px) { .price-label-modal { width:100%; max-height:90vh; border-radius:15px 15px 0 0; } .price-label-preview { grid-template-columns:repeat(2,minmax(0,1fr)); padding:12px; } }
+@media (max-width:700px) { .price-label-wizard { width:100%; } .label-selection-list { padding-left:16px; padding-right:16px; } .select-all-row { padding-left:16px; padding-right:16px; } }
+@media (max-width:700px) { .barcode-card-header { align-items:flex-start; flex-direction:column; padding:16px; } .barcode-card-metrics { width:100%; justify-content:flex-start; gap:24px; } .barcode-card-metrics div { text-align:left; } .barcode-card-body { padding:0 16px 15px; } .barcode-card-actions { align-items:stretch; flex-wrap:wrap; justify-content:flex-start; padding:0 16px 16px; } }
+@media print {
+  @page { size:80mm auto; margin:0; }
+  body { background:#fff !important; }
+  .print-toolbar, .sidebar, .topbar, .site-header, nav { display:none !important; }
+  .price-print-toolbar { display:none !important; }
+  .main-content, .content, main { margin:0 !important; padding:0 !important; max-width:none !important; }
+  .barcode-sheet, .price-label-sheet { gap:.35cm; }
+  .barcode-card, .price-label { border:1px dashed #888; border-radius:0; }
+  .barcode-print-sheet { display:block; }
+  .barcode-print-label { margin:0; border:0; break-after:auto; page-break-after:auto; }
+  .price-label-sheet { display:block; width:80mm; margin:0; padding:0; }
+  .price-preview-body { width:80mm; min-width:80mm; margin:0; padding:0; }
+  .price-label { width:72mm; min-height:48mm; box-sizing:border-box; margin:0 0 4mm; padding:4mm; border:2px solid #586575; border-radius:3mm; display:flex; flex-direction:column; align-items:center; justify-content:center; break-after:auto; page-break-after:auto; }
+}

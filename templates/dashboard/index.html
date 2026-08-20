@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="dashboard-intro">
+  <div>
+    <span class="eyebrow">PILOTAGE COMMERCIAL</span>
+    <h2>Une vue claire de votre activité.</h2>
+    <p>Filtrez les ventes, dépenses et performances sur la période de votre choix.</p>
+  </div>
+  <div class="dashboard-actions">
+    <a class="button button-secondary" href="{% url 'sales:invoice-list' %}">Voir les factures</a>
+    {% if user.can_operate_pos %}<a class="button button-primary" href="{% url 'sales:pos' %}">Ouvrir le POS <span>→</span></a>{% endif %}
+  </div>
+</section>
+
+<form id="dashboard-filters" class="dashboard-filter-bar" method="get">
+  <label>Période
+    <select name="period">
+      <option value="day" {% if selected_period == 'day' %}selected{% endif %}>Jour</option>
+      <option value="week" {% if selected_period == 'week' %}selected{% endif %}>Semaine</option>
+      <option value="month" {% if selected_period == 'month' %}selected{% endif %}>Mois</option>
+      <option value="year" {% if selected_period == 'year' %}selected{% endif %}>Année</option>
+      <option value="custom" {% if selected_period == 'custom' %}selected{% endif %}>Intervalle personnalisé</option>
+    </select>
+  </label>
+  <label>Date de référence
+    <input type="date" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+  </label>
+  <label>Du
+    <input type="date" name="date_from" value="{{ date_from|date:'Y-m-d' }}">
+  </label>
+  <label>Au
+    <input type="date" name="date_to" value="{{ date_to|date:'Y-m-d' }}">
+  </label>
+  <button class="button button-primary" type="submit">Appliquer</button>
+  <a class="button button-secondary" href="{% url 'core:dashboard' %}">Réinitialiser</a>
+  <span class="filter-range">{{ range_start|date:'d/m/Y' }} → {{ range_end|date:'d/m/Y' }}</span>
+</form>
+
+<section class="metric-grid">
+  <article class="metric-card metric-card-primary"><div class="metric-label"><span>Ventes · {{ period_label|lower }}</span><span class="status-dot"></span></div><strong class="metric-value money">{{ period_revenue|floatformat:2 }}</strong><p>Chiffre d'affaires validé</p></article>
+  <article class="metric-card"><div class="metric-label">Factures validées</div><strong class="metric-value">{{ period_sales }}</strong><p>Sur la période sélectionnée</p></article>
+  <article class="metric-card"><div class="metric-label">Dépenses approuvées</div><strong class="metric-value money">{{ period_expenses|floatformat:2 }}</strong><p>Sorties cash approuvées</p></article>
+  <article class="metric-card"><div class="metric-label">Solde activité</div><strong class="metric-value money">{{ period_net|floatformat:2 }}</strong><p>Ventes moins dépenses</p></article>
+</section>
+
+<section class="dashboard-grid">
+  <article class="panel revenue-panel">
+    <header class="panel-header"><div><span class="eyebrow">TENDANCE DES VENTES</span><h3>{{ period_label }} · {{ range_start|date:'d/m/Y' }} au {{ range_end|date:'d/m/Y' }}</h3></div><span class="panel-total money">{{ period_revenue|floatformat:2 }}</span></header>
+    <div class="bar-chart">{% for item in daily_revenue %}<div class="bar-column"><div class="bar-value money">{{ item.amount|floatformat:0 }}</div><div class="bar-track"><span class="bar-fill" style="height:{{ item.height }}%"></span></div><span class="bar-label">{{ item.label }}</span></div>{% empty %}<p class="empty-cell">Aucune donnée sur cette période.</p>{% endfor %}</div>
+  </article>
+  <article class="panel alerts-panel">
+    <header class="panel-header"><div><span class="eyebrow">ÉTAT ACTUEL</span><h3>Alertes opérationnelles</h3></div><a href="{% url 'inventory:list' %}">Stock →</a></header>
+    <div class="alert-row"><span class="alert-icon alert-orange">!</span><div><strong>{{ low_stock }} article{{ low_stock|pluralize }} à surveiller</strong><p>Stock au niveau ou sous le seuil défini.</p></div></div>
+    <div class="alert-row"><span class="alert-icon alert-yellow">◷</span><div><strong>{{ expiring_lots }} lot{{ expiring_lots|pluralize }} bientôt expiré{{ expiring_lots|pluralize }}</strong><p>Expiration prévue sous 30 jours.</p></div></div>
+    <div class="alert-row"><span class="alert-icon alert-red">×</span><div><strong>{{ expired_lots }} lot{{ expired_lots|pluralize }} expiré{{ expired_lots|pluralize }}</strong><p>Ces lots sont exclus de la vente.</p></div></div>
+  </article>
+</section>
+
+<section class="dashboard-grid dashboard-grid-bottom">
+  <article class="panel"><header class="panel-header"><div><span class="eyebrow">TRANSACTIONS</span><h3>Ventes récentes sur la période</h3></div><a href="{% url 'sales:invoice-list' %}">Toutes les factures →</a></header><div class="data-table-wrap"><table class="data-table"><thead><tr><th>Facture</th><th>Caissier</th><th>Date</th><th class="number">Total</th></tr></thead><tbody>{% for invoice in recent_sales %}<tr><td><a class="table-link" href="{% url 'sales:invoice-detail' invoice.pk %}">{{ invoice.number }}</a></td><td>{{ invoice.cashier.username }}</td><td>{{ invoice.created_at|date:'d/m/Y · H:i' }}</td><td class="number money">{{ invoice.total|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="4" class="empty-cell">Aucune vente validée sur cette période.</td></tr>{% endfor %}</tbody></table></div></article>
+  {% include 'dashboard/partials/expenses_stat.html' %}
+</section>
+
+<section class="dashboard-grid dashboard-grid-products">
+  <article class="panel product-ranking-panel product-ranking-top"><header class="panel-header"><div><span class="eyebrow">PERFORMANCE ARTICLES</span><h3>Produits les plus vendus</h3></div><a href="{% url 'products:list' %}">Catalogue →</a></header><div class="product-stat-list">{% for item in most_sold_products %}<div class="product-stat-row"><span class="product-stat-rank">{{ forloop.counter }}</span><div class="product-stat-info"><strong>{{ item.product_name }}</strong><small>{{ item.variant_name }}</small><span class="product-stat-bar"><i style="width:{{ item.bar_width }}%"></i></span></div><strong class="product-stat-value">{{ item.quantity }} unité{{ item.quantity|pluralize }}</strong></div>{% empty %}<p class="empty-cell">Aucune vente enregistrée.</p>{% endfor %}</div></article>
+  <article class="panel product-ranking-panel product-ranking-low"><header class="panel-header"><div><span class="eyebrow">À RELANCER</span><h3>Produits les moins vendus</h3></div><span class="panel-total">5 articles</span></header><div class="product-stat-list product-stat-list-muted">{% for item in least_sold_products %}<div class="product-stat-row"><span class="product-stat-rank">{{ forloop.counter }}</span><div class="product-stat-info"><strong>{{ item.product_name }}</strong><small>{{ item.variant_name }}</small><span class="product-stat-bar"><i style="width:{{ item.bar_width }}%"></i></span></div><strong class="product-stat-value">{{ item.quantity }} unité{{ item.quantity|pluralize }}</strong></div>{% empty %}<p class="empty-cell">Aucune vente enregistrée.</p>{% endfor %}</div></article>
+</section>
+{% endblock %}

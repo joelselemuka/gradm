@@ -1,0 +1,5 @@
+from django.urls import path
+from . import views
+
+app_name = "inventory"
+urlpatterns = [path("", views.stock_list, name="list"), path("alerts/expired/", views.alert_list, {"kind": "expired"}, name="expired-alerts"), path("alerts/expiring/", views.alert_list, {"kind": "expiring"}, name="expiring-alerts"), path("alerts/low-stock/", views.alert_list, {"kind": "low-stock"}, name="low-stock-alerts"), path("operations/", views.operations, name="operations"), path("operations/receive/", views.receive_bulk, name="receive-bulk"), path("operations/issue/", views.issue_bulk, name="issue-bulk"), path("receive/", views.receive_stock, name="receive"), path("issue/", views.issue_stock, name="issue"), path("movements/", views.movement_list, name="movements"), path("counts/", views.count_list, name="count-list"), path("counts/new/", views.count_create, name="count-create"), path("counts/<int:pk>/", views.count_detail, name="count-detail"), path("counts/lines/<int:pk>/update/", views.count_line_update, name="count-line-update"), path("counts/<int:pk>/complete/", views.count_complete, name="count-complete")]

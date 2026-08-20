@@ -1,0 +1,128 @@
+{% extends 'base.html' %}{% block heading %}Rapports{% endblock %}{% block content %}
+<section class="management-heading">
+  <div>
+    <p class="eyebrow">PILOTAGE JOURNALIER</p>
+    <h2>Rapports de vente et de cash</h2>
+    <p>Deux rapports distincts permettent de suivre l'activité commerciale et les fonds physiques.</p>
+  </div>
+</section>
+
+{# ── Filtres en premier ────────────────────────────────────────────────────── #}
+<section class="users-panel" style="margin-bottom:0;border-bottom:none">
+  <form class="toolbar-filters" method="get"
+        style="grid-template-columns:minmax(100px,.7fr) minmax(120px,.8fr) minmax(110px,.7fr) minmax(110px,.7fr) minmax(110px,.7fr) auto">
+    <label>Période
+      <select name="period">
+        <option value="day"{% if date_range.period == 'day' %} selected{% endif %}>Jour</option>
+        <option value="week"{% if date_range.period == 'week' %} selected{% endif %}>Semaine</option>
+        <option value="month"{% if date_range.period == 'month' %} selected{% endif %}>Mois</option>
+        <option value="year"{% if date_range.period == 'year' %} selected{% endif %}>Année</option>
+        <option value="custom"{% if date_range.period == 'custom' %} selected{% endif %}>Intervalle</option>
+      </select>
+    </label>
+    <label>Date repère<input type="date" name="date" value="{{ date_range.selected_date|date:'Y-m-d' }}"></label>
+    <label>Du<input type="date" name="date_from" value="{{ date_range.date_from|date:'Y-m-d' }}"></label>
+    <label>Au<input type="date" name="date_to" value="{{ date_range.date_to|date:'Y-m-d' }}"></label>
+    <label>Type
+      <select name="type">
+        <option value="">Vente + cash</option>
+        <option value="sale"{% if report_type == 'sale' %} selected{% endif %}>Rapport de vente</option>
+        <option value="cash"{% if report_type == 'cash' %} selected{% endif %}>Rapport de cash</option>
+      </select>
+    </label>
+    <button class="button button-primary">Filtrer</button>
+  </form>
+</section>
+
+{# ── Stats du jour ─────────────────────────────────────────────────────────── #}
+<section class="metric-grid" style="margin-top:15px">
+  <article class="metric-card metric-card-primary">
+    <span class="metric-label">Ventes aujourd'hui</span>
+    <strong class="metric-value money">{{ today.revenue|floatformat:2 }}</strong>
+    <p>{{ today.invoice_count }} facture{{ today.invoice_count|pluralize }}</p>
+  </article>
+  <article class="metric-card">
+    <span class="metric-label">Dépenses approuvées</span>
+    <strong class="metric-value money">{{ today.expenses|floatformat:2 }}</strong>
+    <p>rapport de vente</p>
+  </article>
+  <article class="metric-card">
+    <span class="metric-label">Cash du jour</span>
+    <strong class="metric-value money">{{ today.cash|floatformat:2 }}</strong>
+    <p>{{ today.session_count }} session{{ today.session_count|pluralize }}</p>
+  </article>
+  <article class="metric-card">
+    <span class="metric-label">Stock faible</span>
+    <strong class="metric-value">{{ low_stock }}</strong>
+    <p>articles à surveiller</p>
+  </article>
+</section>
+
+{# ── Tableau des rapports ──────────────────────────────────────────────────── #}
+<section class="users-panel" style="margin-top:15px">
+  <div class="users-panel-header">
+    <div>
+      <p class="eyebrow">SITUATIONS FILTRÉES</p>
+      <h3>{{ situations.paginator.count }} rapport{{ situations.paginator.count|pluralize }}</h3>
+    </div>
+  </div>
+  <div class="data-table-wrap">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th class="number">Total</th>
+          <th class="number">Solde</th>
+          <th class="number">Dépenses</th>
+          <th class="number">Versement FC</th>
+          <th class="number">Versement $</th>
+          <th class="number">Sorties FC</th>
+          <th class="number">Sorties $</th>
+          <th class="number">Entrées FC</th>
+          <th class="number">Entrées $</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in situations %}
+        <tr>
+          <td><strong>{{ item.date|date:'l d F Y' }}</strong></td>
+          <td>
+            <span class="status-badge {% if item.report_type == 'sale' %}status-active{% else %}role-manager{% endif %}">
+              <i></i>{{ item.label }}
+            </span>
+          </td>
+          <td class="number money">{{ item.total|floatformat:2 }}</td>
+          <td class="number money">
+            {% if item.report_type == 'sale' %}
+              <strong>{{ item.sales_balance|floatformat:2 }} FC</strong>
+            {% else %}
+              <strong>{{ item.cash_balance_local|floatformat:2 }} FC</strong>
+              {% if item.cash_balance_foreign %}
+                <small style="display:block;font-size:10px;color:#64748b">+ {{ item.cash_balance_foreign|floatformat:2 }} USD</small>
+              {% endif %}
+            {% endif %}
+          </td>
+          <td class="number money">
+            {% if item.report_type == 'sale' %}{{ item.secondary|floatformat:2 }}{% else %}—{% endif %}
+          </td>
+          <td class="number money">{{ item.sales_deposit_local|floatformat:2 }}</td>
+          <td class="number money">{{ item.sales_deposit_foreign|floatformat:2 }}</td>
+          <td class="number money">{% if item.outings_local %}{{ item.outings_local|floatformat:2 }}{% else %}—{% endif %}</td>
+          <td class="number money">{% if item.outings_foreign %}{{ item.outings_foreign|floatformat:2 }}{% else %}—{% endif %}</td>
+          <td class="number money">{% if item.entries_local %}{{ item.entries_local|floatformat:2 }}{% else %}—{% endif %}</td>
+          <td class="number money">{% if item.entries_foreign %}{{ item.entries_foreign|floatformat:2 }}{% else %}—{% endif %}</td>
+          <td class="number">
+            <a class="button button-secondary" href="{% url 'reports:detail' item.date|date:'Y-m-d' %}">Détail</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="empty-cell" colspan="12">Aucun rapport pour ces critères.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include 'partials/pagination.html' with page_obj=situations %}
+</section>
+{% endblock %}

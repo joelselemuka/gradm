@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Connexion · Supermarket</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="auth-page">
+    <main class="auth-card">
+        <div class="brand-mark">S</div>
+        <p class="eyebrow">SUPER MARKET</p>
+        <h1>Connexion</h1>
+        <p class="muted">Accédez à vos opérations quotidiennes.</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if form.non_field_errors %}
+                <div class="error">{{ form.non_field_errors }}</div>
+            {% elif form.errors %}
+                <p class="error">Identifiants incorrects.</p>
+            {% endif %}
+            <button class="button primary wide">Se connecter</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% block heading %}Sessions et caisses{% endblock %}
+{% block content %}
+
+<div x-data="{ modal: null }" @keydown.escape.window="modal = null">
+
+{# ── En-tête avec actions modales ─────────────────────────────────────────── #}
+<section class="management-heading">
+  <div>
+    <p class="eyebrow">ADMINISTRATION DES CAISSES</p>
+    <h2>Sessions et caisses</h2>
+    <p>Ouvrez, suivez et clôturez les postes de chaque équipe sans mélanger leurs opérations de cash.</p>
+  </div>
+  <div class="dashboard-actions">
+    <a class="button button-secondary" href="{% url 'pos:cash-home' %}">Gestion de cash</a>
+    <button class="button button-secondary" type="button" @click="modal = 'register'" style="margin-top:8px">
+      + Créer une caisse
+    </button>
+    <button class="button button-primary" type="button" @click="modal = 'session'" style="margin-top:8px">
+      ▶ Ouvrir une session
+    </button>
+  </div>
+</section>
+
+{# ── Filtres ───────────────────────────────────────────────────────────────── #}
+<section class="users-panel" style="margin-top:15px;margin-bottom:0;border-bottom:none">
+  <form class="toolbar-filters" method="get">
+    <label>Date d'ouverture<input type="date" name="date" value="{{ selected_date }}"></label>
+    <label>Utilisateur
+      <select name="cashier">
+        <option value="">Tous les utilisateurs</option>
+        {% for user in cashiers %}
+          <option value="{{ user.pk }}"{% if selected_cashier == user.pk|stringformat:'s' %} selected{% endif %}>{{ user.username }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Statut
+      <select name="status">
+        <option value="">Tous</option>
+        <option value="OPEN"{% if selected_status == 'OPEN' %} selected{% endif %}>Ouvertes</option>
+        <option value="CLOSED"{% if selected_status == 'CLOSED' %} selected{% endif %}>Clôturées</option>
+      </select>
+    </label>
+    <button class="button button-primary">Filtrer</button>
+  </form>
+</section>
+
+{# ── Liste des sessions ────────────────────────────────────────────────────── #}
+<section class="users-panel" style="margin-top:0">
+  <div class="users-panel-header">
+    <div>
+      <p class="eyebrow">POSTES DE TRAVAIL</p>
+      <h3>{{ sessions.paginator.count }} session{{ sessions.paginator.count|pluralize }}</h3>
+    </div>
+  </div>
+  <div class="data-table-wrap">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Caisse</th>
+          <th>Utilisateur</th>
+          <th>Ouverture</th>
+          <th>Clôture</th>
+          <th>Statut</th>
+          <th class="number">Fonds initial FC</th>
+          <th class="number">Fonds initial USD</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in sessions %}
+        <tr>
+          <td><strong>{{ item.register.name }}</strong></td>
+          <td>{{ item.cashier.username }}</td>
+          <td>{{ item.opened_at|date:'d/m/Y H:i' }}</td>
+          <td>{% if item.closed_at %}{{ item.closed_at|date:'d/m/Y H:i' }}{% else %}—{% endif %}</td>
+          <td>
+            <span class="status-badge {% if item.status == 'OPEN' %}status-active{% else %}status-muted{% endif %}">
+              <i></i>{{ item.get_status_display }}
+            </span>
+          </td>
+          <td class="number money">{{ item.opening_local_amount|floatformat:2 }}</td>
+          <td class="number money">{{ item.opening_foreign_amount|floatformat:2 }}</td>
+          <td class="number" style="white-space:nowrap">
+            <a class="button button-secondary" href="{% url 'pos:cash-report' item.pk %}">Détail</a>
+            {% if item.status == 'CLOSED' %}
+            <a class="button button-secondary" href="{% url 'pos:cash-pdf' item.pk %}" title="Télécharger le rapport PDF">⬇ PDF</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="empty-cell" colspan="8">Aucune session ne correspond aux filtres.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include 'partials/pagination.html' with page_obj=sessions %}
+</section>
+
+{# ── Liste des caisses ─────────────────────────────────────────────────────── #}
+<section class="users-panel" style="margin-top:15px" id="register">
+  <div class="users-panel-header">
+    <div>
+      <p class="eyebrow">CAISSES</p>
+      <h3>Caisses disponibles</h3>
+    </div>
+    <span class="form-help">La création et l'activation sont réservées à ADMIN.</span>
+  </div>
+  <div class="data-table-wrap">
+    <table class="users-table">
+      <thead>
+        <tr><th>Nom</th><th>Sessions ouvertes</th><th>Statut</th></tr>
+      </thead>
+      <tbody>
+        {% for register in registers %}
+        <tr>
+          <td>{{ register.name }}</td>
+          <td>{{ register.open_sessions }}</td>
+          <td>
+            <span class="status-badge {% if register.active %}status-active{% else %}status-muted{% endif %}">
+              <i></i>{{ register.active|yesno:'Active,Désactivée' }}
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="empty-cell" colspan="3">Aucune caisse configurée.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{# ── Modal : Ouvrir une session ───────────────────────────────────────────── #}
+<div class="cash-modal-backdrop" x-cloak x-show="modal === 'session'" x-transition.opacity @click.self="modal = null" role="dialog">
+  <div class="cash-modal">
+    <header>
+      <div>
+        <span class="eyebrow">NOUVEAU POSTE</span>
+        <h3>Ouvrir une session</h3>
+      </div>
+      <button type="button" class="cash-modal-close" @click="modal = null">×</button>
+    </header>
+    <form method="post" action="{% url 'pos:cash-open' %}" id="open-session-form">
+      {% csrf_token %}
+      <div class="form-field">
+        <label for="id_register">Caisse</label>
+        <select id="id_register" name="register">
+          <option value="">— Sélectionner une caisse —</option>
+          {% for reg in registers %}
+            <option value="{{ reg.pk }}">{{ reg.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="id_cashier">Caissier</label>
+        {{ open_form.cashier }}
+      </div>
+
+      {# ── HTMX : solde précédent ── #}
+      <div id="prev-balance-container"
+           hx-get="{% url 'pos:prev-balance' %}"
+           hx-trigger="load"
+           hx-swap="innerHTML">
+        <div class="prev-balance-toggle prev-balance-empty">
+          <div class="toggle-info" style="opacity:.4">
+            <span class="toggle-label">Chargement du solde précédent…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="id_opening_local_amount">Fonds initial <strong>FC</strong></label>
+        {{ open_form.opening_local_amount }}
+      </div>
+      <div class="form-field">
+        <label for="id_opening_foreign_amount">Fonds initial <strong>USD</strong></label>
+        {{ open_form.opening_foreign_amount }}
+      </div>
+      <footer>
+        <button type="button" class="button button-secondary" @click="modal = null">Annuler</button>
+        <button class="button button-primary" type="submit">Ouvrir la session</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
+{# ── Modal : Créer une caisse ─────────────────────────────────────────────── #}
+<div class="cash-modal-backdrop" x-cloak x-show="modal === 'register'" x-transition.opacity @click.self="modal = null" role="dialog">
+  <div class="cash-modal">
+    <header>
+      <div>
+        <span class="eyebrow">NOUVELLE CAISSE</span>
+        <h3>Créer une caisse</h3>
+      </div>
+      <button type="button" class="cash-modal-close" @click="modal = null">×</button>
+    </header>
+    <form method="post" action="{% url 'pos:register-create' %}">
+      {% csrf_token %}
+      {{ register_form.as_p }}
+      <footer>
+        <button type="button" class="button button-secondary" @click="modal = null">Annuler</button>
+        <button class="button button-primary" type="submit">Créer la caisse</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
+</div>{# /x-data #}
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── Backdrop ────────────────────────────────────────────── */
+.cash-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* ── Modal card ─────────────────────────────────────────── */
+.cash-modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.22);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cash-modal header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cash-modal header .eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+.cash-modal header h3 { margin: 0; font-size: 18px; font-weight: 700; color: #111827; }
+.cash-modal-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cash-modal-close:hover { background: #f3f4f6; color: #111827; }
+
+/* ── Toggle switch "Solde précédent" ────────────────────── */
+.prev-balance-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: .85rem;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: .75rem;
+  padding: .9rem 1.1rem;
+  margin: .6rem 0 1rem;
+}
+.toggle-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  width: 44px;
+  height: 24px;
+  margin-top: .15rem;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #cbd5e1;
+  border-radius: 34px;
+  transition: background .25s;
+}
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  transition: transform .25s;
+}
+.toggle-switch input:checked + .toggle-slider { background: #3b82f6; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+.toggle-info { display: flex; flex-direction: column; gap: .2rem; }
+.toggle-label { font-size: .875rem; font-weight: 600; color: #1e3a8a; line-height: 1.3; }
+.toggle-desc  { font-size: .78rem; color: #475569; line-height: 1.5; }
+.toggle-balance { display: inline-block; margin-top: .3rem; font-size: .8rem; font-weight: 600; color: #1d4ed8; background: #dbeafe; border-radius: .35rem; padding: .2rem .6rem; }
+.field-prefilled { background: #f0f9ff !important; color: #0369a1 !important; border-color: #7dd3fc !important; cursor: not-allowed; }
+
+/* ── Modal footer buttons ───────────────────────────────── */
+.cash-modal footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #edf0f2;
+  margin-top: 4px;
+}
+</style>
+{% endblock %}

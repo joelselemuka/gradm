@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block heading %}Modifier une catégorie{% endblock %}
+{% block content %}
+<section class="form-layout category-edit-layout"><div class="form-heading"><p class="eyebrow">Référentiel catalogue</p><h2>Modifier « {{ category.name }} »</h2><p>Les modifications affectent les nouveaux articles et conservent les références existantes.</p></div><form class="pro-form" method="post">{% csrf_token %}{{ form.as_p }}<div class="form-actions"><a class="button button-secondary" href="{% url 'products:category-list' %}">Annuler</a><button class="button button-primary">Enregistrer</button></div></form></section>
+{% endblock %}

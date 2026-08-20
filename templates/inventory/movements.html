@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block heading %}Mouvements de stock{% endblock %}
+{% block content %}
+
+<section class="management-heading">
+  <div>
+    <p class="eyebrow">Traçabilité des stocks</p>
+    <h2>Journal des mouvements</h2>
+    <p>Chaque entrée, sortie ou correction de stock est enregistrée avec son auteur et sa référence.</p>
+  </div>
+  <div class="dashboard-actions">
+    <a class="button button-secondary" href="{% url 'inventory:list' %}">← Stock et lots</a>
+  </div>
+</section>
+
+{# Filtres #}
+<section class="users-panel" style="margin-bottom:0;border-bottom:none">
+  <form class="toolbar-filters" method="get" style="grid-template-columns:minmax(160px,1.5fr) minmax(130px,.7fr) minmax(130px,.7fr) auto">
+    <label>Produit / référence
+      <input name="q" value="{{ query|default:'' }}" placeholder="Nom, SKU, lot, référence">
+    </label>
+    <label>Type
+      <select name="type">
+        <option value="">Tous</option>
+        {% for val, label in movement_types %}
+          <option value="{{ val }}" {% if type_filter == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Date
+      <input type="date" name="date" value="{{ date_filter|default:'' }}">
+    </label>
+    <button class="button button-primary">Filtrer</button>
+  </form>
+</section>
+
+<section class="users-panel" style="margin-top:0">
+  <div class="users-panel-header">
+    <div>
+      <p class="eyebrow">JOURNAL STOCK</p>
+      <h3>{{ movements.paginator.count }} mouvement{{ movements.paginator.count|pluralize }}</h3>
+    </div>
+  </div>
+
+  <div class="data-table-wrap">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Produit / variante</th>
+          <th>Lot</th>
+          <th>Type de mouvement</th>
+          <th>Référence</th>
+          <th>Acteur</th>
+          <th class="number">Variation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for movement in movements %}
+        <tr>
+          <td>
+            <strong>{{ movement.created_at|date:'d/m/Y' }}</strong>
+            <small class="muted-cell">{{ movement.created_at|date:'H:i' }}</small>
+          </td>
+          <td>
+            <strong>{{ movement.lot.variant.product.name }}</strong>
+            <small class="muted-cell">{{ movement.lot.variant.name }}</small>
+          </td>
+          <td>
+            <span class="role-badge role-manager">{{ movement.lot.code }}</span>
+          </td>
+          <td>{{ movement.get_movement_type_display }}</td>
+          <td>{{ movement.reference|default:'—' }}</td>
+          <td>{{ movement.actor.username|default:'Système' }}</td>
+          <td class="number money {% if movement.quantity_delta > 0 %}movement-in{% elif movement.quantity_delta < 0 %}movement-out{% endif %}">
+            {% if movement.quantity_delta > 0 %}+{% endif %}{{ movement.quantity_delta }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="empty-cell" colspan="7">Aucun mouvement pour ces critères.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include 'partials/pagination.html' with page_obj=movements %}
+</section>
+
+{% endblock %}

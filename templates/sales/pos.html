@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load formatting %}
+{% load l10n %}
+
+{% block heading %}Point de vente{% endblock %}
+
+{% block content %}
+<section class="pos-workspace" x-data="{ previewOpen: false }" @keydown.escape.window="previewOpen = false" @pos-preview-open.window="previewOpen = true">
+  <article class="pos-catalog-panel">
+    <header class="pos-panel-heading">
+      <div>
+        <p class="eyebrow">Caisse {{ session.register.name }}</p>
+        <h2>Articles à vendre</h2>
+      </div>
+      <span class="pos-session-status"><i></i> Session ouverte</span>
+    </header>
+
+    <div class="pos-search" role="search">
+      <label class="pos-search-label" for="pos-search-field">Scanner ou rechercher un article</label>
+      <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>
+      <input id="pos-search-field" autofocus name="q" value="{{ query }}" placeholder="Rechercher un article" autocomplete="off" aria-label="Rechercher un article" hx-get="{% url 'sales:pos' %}" hx-trigger="load, keyup changed delay:350ms" hx-target="#pos-results" hx-swap="innerHTML" hx-sync="this:replace">
+    </div>
+    <div id="pos-results" class="pos-results" aria-live="polite">{% include 'sales/partials/product_results.html' %}</div>
+  </article>
+
+  <aside class="pos-cart-panel" x-data="{ discount: Number('{{ checkout_form.manual_discount.value|default_if_none:0 }}') || 0 }">
+    <header class="pos-panel-heading pos-cart-heading">
+      <div>
+        <p class="eyebrow">Facture en préparation</p>
+        <h2 id="pos-draft-invoice-number" class="pos-invoice-number">{{ draft_invoice_number|default:'Nouvelle vente' }}</h2>
+        <p class="pos-cart-caption">Panier <span id="pos-cart-count">{{ cart_items|length }}</span></p>
+      </div>
+      <span id="pos-cart-total" class="pos-cart-total money">{{ cart_total|money }}</span>
+    </header>
+
+    <div id="pos-cart-lines" class="pos-cart-lines">{% include 'sales/partials/pos_cart_lines.html' %}</div>
+
+    <form id="checkout-details" class="pos-checkout-form" method="post" action="{% url 'sales:checkout-preview' %}" hx-post="{% url 'sales:checkout-preview' %}" hx-target="#pos-preview-content" hx-swap="innerHTML" hx-on::after-request="if (event.detail.successful) window.dispatchEvent(new CustomEvent('pos-preview-open'))" data-discounts-enabled="{{ store_settings.discounts_enabled|yesno:'1,0' }}" data-promotion-enabled="{{ store_settings.promotion_enabled|yesno:'1,0' }}" data-promotion-threshold="{% localize off %}{{ store_settings.promotion_threshold }}{% endlocalize %}" data-promotion-type="{{ store_settings.promotion_type }}" data-promotion-value="{% localize off %}{{ store_settings.promotion_value }}{% endlocalize %}">
+      {% csrf_token %}
+      <div id="pos-cart-subtotal" class="pos-total-row" data-subtotal="{% localize off %}{{ cart_total }}{% endlocalize %}">
+        <span>Sous-total</span><strong class="money">{{ cart_total|money }}</strong>
+      </div>
+
+      <div class="pos-form-grid">
+        <label>Nom du client <span>optionnel</span><input name="customer_name" maxlength="180" value="{{ checkout_form.customer_name.value|default_if_none:'' }}" placeholder="Nom complet"></label>
+        <label>Contact <span>optionnel</span><input name="customer_phone" maxlength="40" value="{{ checkout_form.customer_phone.value|default_if_none:'' }}" placeholder="Téléphone"></label>
+        <label>Réduction accordée <span>{% if checkout_form.manual_discount.field.disabled %}désactivée{% else %}plafond {{ store_settings.manual_discount_limit|money }}{% endif %}</span><input name="manual_discount" type="number" step="0.01" min="0" value="{{ checkout_form.manual_discount.value|default_if_none:0 }}" placeholder="0,00" x-model.number="discount"{% if checkout_form.manual_discount.field.disabled %} disabled{% endif %}></label>
+        <label>Montant reçu <span>espèces</span><input name="cash_received" type="number" step="0.01" min="0" value="{{ checkout_form.cash_received.value|default_if_none:'' }}" placeholder="0,00"></label>
+      </div>
+
+      <div id="pos-promotion-row" class="pos-total-row"{% if not store_settings.discounts_enabled or not store_settings.promotion_enabled %} hidden{% endif %}>
+        <span>Promotion automatique</span><strong id="pos-promotion-value">0</strong>
+      </div>
+      <div id="pos-net-total" class="pos-net-total">
+        <span>Net à payer</span><strong>{{ cart_total|money }}</strong>
+      </div>
+      <button id="pos-next-button" {% if not cart_items %}disabled{% endif %} class="button button-primary pos-next-button" type="submit"><span>Suivant</span><span aria-hidden="true">→</span></button>
+    </form>
+  </aside>
+
+  <div class="pos-modal-backdrop" x-cloak x-show="previewOpen" x-transition.opacity aria-hidden="true">
+    <div class="pos-modal" role="dialog" aria-modal="true" aria-labelledby="pos-preview-title" @click.outside="previewOpen = false" x-transition.scale.origin.center>
+      <div id="pos-preview-content"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.body.addEventListener('pos-cart-added', function () {
+  const field = document.getElementById('pos-search-field');
+  if (!field) return;
+  field.value = '';
+  field.focus();
+  if (window.htmx) window.htmx.trigger(field, 'keyup');
+});
+
+function formatPosMoney(value) {
+  const amount = Number(value || 0);
+  const decimals = Number.isInteger(amount) ? 0 : 2;
+  return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: decimals, maximumFractionDigits: 2 }).format(amount).replace(/[\u202f\u00a0]/g, '.');
+}
+
+function syncPosNetTotal() {
+  const subtotalElement = document.getElementById('pos-cart-subtotal');
+  const subtotal = subtotalElement ? Number(subtotalElement.dataset.subtotal || 0) : 0;
+  const checkoutForm = document.getElementById('checkout-details');
+  const promotionEnabled = checkoutForm?.dataset.discountsEnabled === '1' && checkoutForm?.dataset.promotionEnabled === '1';
+  const threshold = Number(checkoutForm?.dataset.promotionThreshold || 0);
+  const promotionValue = Number(checkoutForm?.dataset.promotionValue || 0);
+  const promotionType = checkoutForm?.dataset.promotionType || 'PERCENT';
+  let promotion = 0;
+  if (promotionEnabled && subtotal >= threshold) promotion = promotionType === 'PERCENT' ? subtotal * promotionValue / 100 : promotionValue;
+  promotion = Math.min(subtotal, Math.max(0, promotion));
+  const discountElement = document.querySelector('input[name="manual_discount"]');
+  const discount = discountElement ? Number(discountElement.value || 0) : 0;
+  const net = Math.max(0, subtotal - promotion - (Number.isFinite(discount) ? discount : 0));
+  const promotionRow = document.getElementById('pos-promotion-row');
+  const promotionValueElement = document.getElementById('pos-promotion-value');
+  if (promotionRow) promotionRow.hidden = !promotionEnabled;
+  if (promotionValueElement) {
+    const formattedPromotion = formatPosMoney(promotion);
+    if (promotionValueElement.textContent !== formattedPromotion) promotionValueElement.textContent = formattedPromotion;
+  }
+  const netElement = document.querySelector('#pos-net-total strong');
+  const formattedNet = formatPosMoney(net);
+  if (netElement && netElement.textContent !== formattedNet) netElement.textContent = formattedNet;
+}
+
+let discountKeyupTimer;
+document.body.addEventListener('keyup', function (event) {
+  if (!event.target.matches('input[name="manual_discount"]')) return;
+  window.clearTimeout(discountKeyupTimer);
+  discountKeyupTimer = window.setTimeout(syncPosNetTotal, 350);
+});
+document.body.addEventListener('htmx:oobAfterSwap', syncPosNetTotal);
+document.body.addEventListener('htmx:afterSwap', syncPosNetTotal);
+document.body.addEventListener('htmx:afterSettle', syncPosNetTotal);
+document.body.addEventListener('htmx:afterRequest', function (event) {
+  if (event.target && event.target.id === 'checkout-details' && event.detail.successful) window.dispatchEvent(new CustomEvent('pos-preview-open'));
+});
+
+const checkoutDetails = document.getElementById('checkout-details');
+// Le sous-total est remplacé par HTMX via hx-swap-oob. Observer uniquement
+// son attribut évite une boucle: syncPosNetTotal modifie le texte du total,
+// ce qui ne doit pas relancer l'observateur.
+if (checkoutDetails && window.MutationObserver) new MutationObserver(syncPosNetTotal).observe(checkoutDetails, { attributes: true, attributeFilter: ['data-subtotal'] });
+window.addEventListener('load', syncPosNetTotal);
+</script>
+{% endblock %}

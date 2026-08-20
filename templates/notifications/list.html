@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block heading %}Notifications{% endblock %}
+{% block content %}
+<section class="notifications-panel">
+  <header class="notifications-heading"><div><p class="eyebrow">CENTRE D’ALERTES</p><h2>Notifications</h2><p>Les demandes nécessitant une action ouvrent directement leur fiche.</p></div></header>
+  <div class="notifications-list">
+    {% for item in notifications %}
+      {% if item.target_url %}<a class="notification-item {% if not item.read_at %}is-unread{% endif %}" href="{% url 'notifications:read' item.pk %}">{% else %}<div class="notification-item {% if not item.read_at %}is-unread{% endif %}">{% endif %}
+        <span class="notification-dot notification-dot-{{ item.level|lower }}"></span><div><strong>{{ item.title }}</strong><p>{{ item.message }}</p><small>{{ item.created_at|date:'d/m/Y H:i' }}{% if item.read_at %} · Lu{% else %} · Cliquer pour traiter{% endif %}</small></div>
+      {% if item.target_url %}</a>{% else %}</div>{% endif %}
+    {% empty %}<p class="notifications-empty">Aucune notification.</p>{% endfor %}
+  </div>{% include 'partials/pagination.html' with page_obj=notifications %}
+</section>
+{% endblock %}

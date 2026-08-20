@@ -1,0 +1,12 @@
+Django>=5.2,<5.3
+psycopg[binary]>=3.2
+celery[redis]>=5.4
+redis>=5.2
+channels[daphne]>=4.2
+channels-redis>=4.2
+django-htmx>=1.22
+django-ratelimit>=4.1
+django-celery-beat>=2.6
+whitenoise>=6.7
+dj-database-url>=2.2
+reportlab>=4.0

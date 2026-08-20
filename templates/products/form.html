@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block heading %}{{ title }}{% endblock %}
+{% block content %}
+<section class="article-create-layout">
+  <aside class="article-create-aside">
+    <p class="eyebrow">Nouveau référencement</p>
+    <h2>Créer un article complet</h2>
+    <p>Référencez l’article, son prix de vente, ses codes d’identification et son seuil d’alerte. Le coût réel sera renseigné lors de l’approvisionnement.</p>
+    <div class="article-create-note"><strong>Produits périssables</strong><span>Activez l’option d’expiration pour enregistrer la date initiale. Chaque réception restera ensuite tracée par lot.</span></div>
+    {% if user.can_manage_cash %}<div class="quick-category" x-data="{ saved: false }"><p class="eyebrow">Catégorie manquante ?</p><h3>Création rapide</h3><form hx-post="{% url 'products:category-quick-create' %}" hx-swap="none" hx-on::after-request="if ($event.detail.successful) { $refs.categoryName.value = ''; saved = true }"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"><label>Nom de la catégorie<input x-ref="categoryName" name="name" required placeholder="Ex. Alimentation"></label><button class="button button-secondary" type="submit">Ajouter la catégorie</button></form><p id="category-quick-feedback" class="quick-feedback" x-show="saved" x-transition>La catégorie sera sélectionnée automatiquement.</p><a class="category-management-link" href="{% url 'products:category-list' %}">Gérer toutes les catégories →</a></div>{% endif %}
+  </aside>
+  <form class="pro-form article-create-form" method="post" x-data="{ hasExpiry: {% if form.expiration_managed.value %}true{% else %}false{% endif %} }">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="error">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="article-form-section"><p class="eyebrow">Identification</p><div class="article-field-grid"><label>Nom du produit{{ form.name }}{{ form.name.errors }}</label><label>Référence interne{{ form.internal_reference }}{{ form.internal_reference.errors }}</label><label>Catégorie{% include 'products/partials/category_select.html' with categories=form.category.field.queryset selected_category=form.category.value %}{{ form.category.errors }}</label><label>Marque{{ form.brand }}{{ form.brand.errors }}</label></div><label>Description{{ form.description }}{{ form.description.errors }}</label></div>
+    <div class="article-form-section"><p class="eyebrow">Expiration et vente</p><label class="form-switch"><input type="checkbox" name="expiration_managed" x-model="hasExpiry" {% if form.expiration_managed.value %}checked{% endif %}><span>Produit avec date d’expiration</span></label><div x-cloak x-show="hasExpiry" x-transition class="expiry-field"><label>Date d’expiration initiale<input type="date" name="expiration_date" value="{{ form.expiration_date.value|default:'' }}" :required="hasExpiry">{{ form.expiration_date.errors }}</label></div><div class="article-field-grid"><label>SKU{{ form.sku }}{{ form.sku.errors }}</label><label>Code-barres fabricant{{ form.manufacturer_barcode }}{{ form.manufacturer_barcode.errors }}</label><label>Code-barres interne supermarché{{ form.store_barcode }}{{ form.store_barcode.errors }}</label><label>Prix de vente{{ form.sale_price }}{{ form.sale_price.errors }}</label><label>Stock d’alerte{{ form.low_stock_threshold }}{{ form.low_stock_threshold.errors }}</label></div></div>
+    <div class="form-actions"><a class="button button-secondary" href="{% url 'products:list' %}">Annuler</a><button class="button button-primary">Créer l’article</button></div>
+  </form>
+</section>
+{% endblock %}

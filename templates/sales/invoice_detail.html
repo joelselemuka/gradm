@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block heading %}Facture {{ invoice.number }}{% endblock %}
+{% block content %}
+
+<section class="invoice-page">
+
+  {# ── En-tête ──────────────────────────────────────────────────────────────── #}
+  <header class="invoice-page-header">
+    <div>
+      <p class="eyebrow">DÉTAIL DE LA FACTURE</p>
+      <h2>{{ invoice.number }}</h2>
+      <p class="muted-cell">
+        {{ invoice.created_at|date:'d/m/Y à H:i' }}
+        · {{ invoice.cashier.get_full_name|default:invoice.cashier.username }}
+      </p>
+    </div>
+    <div class="invoice-actions">
+      <span class="status-badge {% if invoice.status == 'VALIDATED' %}status-active{% elif invoice.status == 'CANCELLED' %}role-cashier{% else %}status-muted{% endif %}">
+        <i></i>{{ invoice.get_status_display }}
+      </span>
+      <a class="button button-secondary" href="{% url 'sales:invoice-list' %}">← Retour aux factures</a>
+      <a class="button button-primary" href="?print=1">🖨 Imprimer</a>
+    </div>
+  </header>
+
+  {# ── Annulation affichée en haut si clôturée ──────────────────────────────── #}
+  {% if invoice.status == 'CANCELLED' %}
+  <div class="settings-alert" style="margin-bottom:20px">
+    <strong>Facture annulée</strong> — {{ invoice.cancellation_reason|default:'Aucun motif fourni' }}
+    {% if invoice.cancelled_by %}
+      · par <strong>{{ invoice.cancelled_by.username }}</strong>
+      le {{ invoice.cancelled_at|date:'d/m/Y à H:i' }}
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="invoice-detail-grid">
+
+    {# ── Corps : lignes de facture ─────────────────────────────────────────── #}
+    <article class="panel invoice-document">
+      <div class="invoice-document-head">
+        <div>
+          <span class="eyebrow">VENTE</span>
+          <h3>Articles facturés</h3>
+        </div>
+        {% if invoice.customer_name %}
+        <div class="invoice-customer">
+          <span>Client</span>
+          <strong>{{ invoice.customer_name }}</strong>
+          {% if invoice.customer_phone %}<small>{{ invoice.customer_phone }}</small>{% endif %}
+        </div>
+        {% else %}
+        <span class="muted-cell">Vente comptoir</span>
+        {% endif %}
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table invoice-lines">
+          <thead>
+            <tr>
+              <th>Article</th>
+              <th class="number">Qté</th>
+              <th class="number">Prix unitaire</th>
+              <th class="number">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for line in invoice.lines.all %}
+            <tr>
+              <td>
+                <strong>{{ line.product_name }}</strong>
+                <small>{{ line.variant_name }}</small>
+              </td>
+              <td class="number">{{ line.quantity }}</td>
+              <td class="number money">{{ line.unit_price|floatformat:2 }}</td>
+              <td class="number money">{{ line.line_total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <dl class="invoice-totals">
+        <div><dt>Sous-total</dt><dd class="money">{{ invoice.subtotal|floatformat:2 }}</dd></div>
+        {% if invoice.promotion_discount %}
+        <div><dt>Promotion</dt><dd class="money discount">− {{ invoice.promotion_discount|floatformat:2 }}</dd></div>
+        {% endif %}
+        {% if invoice.manual_discount %}
+        <div><dt>Réduction accordée</dt><dd class="money discount">− {{ invoice.manual_discount|floatformat:2 }}</dd></div>
+        {% endif %}
+        <div class="invoice-total">
+          <dt>Net à payer</dt>
+          <dd class="money">{{ invoice.total|floatformat:2 }}</dd>
+        </div>
+      </dl>
+    </article>
+
+    {# ── Panneau latéral ──────────────────────────────────────────────────── #}
+    <aside class="invoice-side">
+
+      {# Paiements #}
+      <article class="panel">
+        <p class="eyebrow">PAIEMENT</p>
+        <h3>Règlement</h3>
+        {% for payment in invoice.payments.all %}
+        <div class="invoice-payment">
+          <span>{{ payment.get_method_display }}</span>
+          <strong class="money">{{ payment.amount|floatformat:2 }}</strong>
+        </div>
+        {% endfor %}
+
+        {% if invoice.cash_session %}
+        <hr>
+        <p class="eyebrow">SESSION</p>
+        <div class="invoice-meta-row">
+          <span>Caisse</span>
+          <strong>{{ invoice.cash_session.register.name }}</strong>
+        </div>
+        <div class="invoice-meta-row">
+          <span>Statut session</span>
+          <strong>{{ invoice.cash_session.get_status_display }}</strong>
+        </div>
+        <div class="invoice-meta-row">
+          <span>Caissier</span>
+          <strong>{{ invoice.cash_session.cashier.username }}</strong>
+        </div>
+        {% endif %}
+      </article>
+
+      {# Annulation #}
+      {% if cancellation_allowed %}
+      <article class="panel invoice-danger">
+        <p class="eyebrow">ACTION SENSIBLE</p>
+        <h3>Annuler la facture</h3>
+        <p>Cette action restaure le stock et laisse une trace d'audit.</p>
+        <form method="post" action="{% url 'sales:invoice-cancel' invoice.pk %}">
+          {% csrf_token %}
+          {{ cancellation_form.as_p }}
+          <button class="button button-danger">Annuler la facture</button>
+        </form>
+      </article>
+      {% elif invoice.status == 'VALIDATED' and not cancellation_allowed %}
+      <article class="panel" style="border-top:3px solid #edf0f2">
+        <p class="eyebrow">ANNULATION</p>
+        <p class="muted-cell" style="font-size:12px">
+          {% if invoice.cash_session and invoice.cash_session.status != 'OPEN' %}
+            La session est clôturée — cette facture ne peut plus être annulée.
+          {% else %}
+            L'annulation n'est plus possible (aujourd'hui uniquement).
+          {% endif %}
+        </p>
+      </article>
+      {% endif %}
+
+    </aside>
+  </div>
+</section>
+
+{% if print_on_load %}
+<script>(function(){let p=false;function s(){if(p)return;p=true;setTimeout(()=>window.print(),150)}window.addEventListener('afterprint',()=>window.location.replace("{% url 'sales:pos' %}"),{once:true});document.readyState==='loading'?document.addEventListener('DOMContentLoaded',s,{once:true}):s()})();</script>
+{% endif %}
+{% endblock %}

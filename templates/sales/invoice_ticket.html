@@ -1,0 +1,102 @@
+{% load static %}
+{% load formatting %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ invoice.number }} · Ticket</title>
+  <style>
+    @page { size: 80mm auto; margin: 0; }
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { width: 72mm; margin: 0 auto; padding: 5mm 2mm; color: #000; background: #fff; font: 12px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ticket { width: 100%; }
+    .center { text-align: center; }
+    .brand { margin: 0; font: 700 18px/1.15 Arial, sans-serif; letter-spacing: .02em; text-transform: uppercase; }
+    .muted { color: #000; }
+    .rule { border: 0; border-top: 1px dashed #6b7280; margin: 10px 0; }
+    .meta { display: grid; gap: 2px; margin-top: 8px; }
+    .meta strong { color: #000; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th { border-bottom: 1px solid #111827; padding: 3px 0; text-align: left; font-weight: 700; }
+    td { padding: 4px 0; vertical-align: top; }
+    th:last-child, td:last-child { text-align: right; white-space: nowrap; }
+    .qty { width: 12%; text-align: center; }
+    .product { width: 58%; padding-right: 4px; }
+    .line-subtitle { display: block; color: #000; font-size: 10px; }
+    .totals { border-top: 1px dashed #6b7280; margin-top: 7px; padding-top: 7px; }
+    .total-row { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
+    .grand-total { border-top: 1px solid #111827; margin-top: 5px; padding-top: 6px; font-size: 15px; font-weight: 700; }
+    .footer { border-top: 1px dashed #6b7280; margin-top: 12px; padding-top: 10px; text-align: center; white-space: pre-line; }
+    .no-print { margin-top: 16px; border: 1px solid #d1d5db; border-radius: 6px; background: #f9fafb; padding: 8px 10px; font: 13px Arial, sans-serif; cursor: pointer; }
+    @media print { body { padding: 3mm 2mm; } .no-print { display: none; } }
+  </style>
+</head>
+<body>
+  <main class="ticket" aria-label="Ticket de caisse">
+    <header class="center">
+      <h1 class="brand">{{ store_settings.name }}</h1>
+      {% if store_settings.address %}<div class="muted">{{ store_settings.address }}</div>{% endif %}
+      {% if store_settings.contact %}<div class="muted">Contact : {{ store_settings.contact }}</div>{% endif %}
+      {% if store_settings.ccm_number %}<div class="muted">N° CCM : {{ store_settings.ccm_number }}</div>{% endif %}
+      {% if store_settings.national_id %}<div class="muted">ID national : {{ store_settings.national_id }}</div>{% endif %}
+    </header>
+
+    <div class="meta">
+      <div>Facture : <strong>{{ invoice.number }}</strong></div>
+      <div>Date : {{ invoice.created_at|date:'d/m/Y H:i' }}</div>
+      <div>Caissier : {{ invoice.cashier.get_full_name|default:invoice.cashier.username }}</div>
+      {% if invoice.customer_name %}<div>Client : {{ invoice.customer_name }}{% if invoice.customer_phone %} · {{ invoice.customer_phone }}{% endif %}</div>{% endif %}
+    </div>
+
+    <hr class="rule">
+    <table>
+      <thead><tr><th class="product">Article</th><th class="qty">Qté</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for line in invoice.lines.all %}
+        <tr>
+          <td class="product">{{ line.product_name }}<span class="line-subtitle">{{ line.variant_name }} · {{ line.unit_price|money }}</span></td>
+          <td class="qty">{{ line.quantity }}</td>
+          <td>{{ line.line_total|money }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <section class="totals">
+      <div class="total-row"><span>Sous-total</span><strong>{{ invoice.subtotal|money }}</strong></div>
+      {% if invoice.promotion_discount %}<div class="total-row"><span>Promotion</span><strong>- {{ invoice.promotion_discount|money }}</strong></div>{% endif %}
+      {% if invoice.manual_discount %}<div class="total-row"><span>Remise</span><strong>- {{ invoice.manual_discount|money }}</strong></div>{% endif %}
+      <div class="total-row grand-total"><span>NET À PAYER</span><strong>{{ invoice.total|money }} {{ store_settings.currency }}</strong></div>
+      {% for payment in invoice.payments.all %}
+        <div class="total-row"><span>Montant payé</span><strong>{% if payment.cash_received %}{{ payment.cash_received|money }}{% else %}{{ payment.amount|money }}{% endif %} {{ store_settings.currency }}</strong></div>
+        {% if payment.change_due %}<div class="total-row"><span>Monnaie</span><strong>{{ payment.change_due|money }} {{ store_settings.currency }}</strong></div>{% endif %}
+      {% endfor %}
+    </section>
+
+    <footer class="footer">Merci pour votre achat !
+
+Faites vos courses chez nous et profitez régulièrement de nos meilleures offres.
+
+À très bientôt !</footer>
+    <button class="no-print" type="button" onclick="window.print()">Imprimer le ticket</button>
+  </main>
+  {% if print_on_load %}
+  <script>
+    (function () {
+      let started = false;
+      const posUrl = "{% url 'sales:pos' %}";
+      function printTicket() {
+        if (started) return;
+        started = true;
+        window.setTimeout(function () { window.print(); }, 200);
+      }
+      window.addEventListener('afterprint', function () { window.location.replace(posUrl); }, { once: true });
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', printTicket, { once: true });
+      else printTicket();
+    })();
+  </script>
+  {% endif %}
+</body>
+</html>

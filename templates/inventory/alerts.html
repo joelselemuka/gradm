@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block heading %}{{ title }}{% endblock %}
+{% block content %}
+<section class="management-heading"><div><p class="eyebrow">ALERTE STOCK</p><h2>{{ title }}</h2><p>{{ description }}</p></div><a class="button button-secondary" href="{% url 'inventory:list' %}">Retour au stock</a></section>
+<section class="users-panel"><div class="users-panel-header"><div><p class="eyebrow">LISTE EXACTE</p><h3>{{ rows.paginator.count }} produit{{ rows.paginator.count|pluralize }}</h3></div></div>
+  <div class="data-table-wrap"><table class="users-table"><thead><tr><th>Produit</th><th>Référence article</th>{% if alert_type == 'low-stock' %}<th class="number">Stock actuel</th><th class="number">Seuil d’alerte</th>{% else %}<th>Date d’expiration</th><th class="number">Stock disponible</th>{% endif %}</tr></thead>
+  <tbody>{% for item in rows %}<tr>{% if alert_type == 'low-stock' %}<td><strong>{{ item.product.name }}</strong></td><td>Réf. {{ item.sku }}</td><td class="number">{{ item.current_stock }}</td><td class="number">{{ item.low_stock_threshold }}</td>{% else %}<td><strong>{{ item.product.name }}</strong></td><td>Réf. {{ item.variant.sku }}</td><td>{{ item.expiration_date|date:'d/m/Y' }}</td><td class="number">{{ item.stock }}</td>{% endif %}</tr>{% empty %}<tr><td class="empty-cell" colspan="4">Aucun produit ne correspond à cette alerte.</td></tr>{% endfor %}</tbody></table></div>
+  {% include 'partials/pagination.html' with page_obj=rows %}
+</section>
+{% endblock %}

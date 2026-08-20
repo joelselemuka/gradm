@@ -1,0 +1,6 @@
+<article id="dashboard-expenses" class="panel cash-panel" hx-get="{% url 'core:dashboard-expenses' %}" hx-include="#dashboard-filters" hx-trigger="every 15s, refresh" hx-swap="outerHTML">
+  <span class="eyebrow">DÉPENSES DE LA PÉRIODE</span>
+  <strong class="cash-value money">{{ approved_expenses|floatformat:2 }}</strong>
+  <p>Montant des dépenses approuvées du {{ range_start|date:'d/m/Y' }} au {{ range_end|date:'d/m/Y' }}.</p>
+  <a class="button button-secondary" href="{% url 'expenses:list' %}">Gérer les dépenses</a>
+</article>

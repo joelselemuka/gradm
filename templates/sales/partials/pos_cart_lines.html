@@ -1,0 +1,7 @@
+{% load formatting %}
+{% if cart_error %}<div class="pos-cart-inline-error" role="alert">{{ cart_error }}</div>{% endif %}
+{% for item in cart_items %}
+  <form class="pos-cart-line" method="post" action="{% url 'sales:cart-update' item.variant.pk %}">{% csrf_token %}<div class="pos-cart-product"><strong>{{ item.variant.product.name }}</strong><span>Réf. {{ item.variant.sku }}</span></div><input class="pos-cart-quantity" name="quantity" type="number" min="1" step="1" value="{{ item.quantity }}" aria-label="Quantité de {{ item.variant.product.name }}" hx-post="{% url 'sales:cart-update' item.variant.pk %}" hx-trigger="input changed delay:350ms" hx-target="#pos-cart-lines" hx-swap="outerHTML" hx-include="closest form"><strong class="money pos-cart-line-price">{{ item.line_total|money }}</strong><button class="pos-remove-icon" type="button" name="remove" value="1" aria-label="Supprimer {{ item.variant.product.name }}" hx-post="{% url 'sales:cart-update' item.variant.pk %}" hx-vals='{"remove":"1"}' hx-target="#pos-cart-lines" hx-swap="outerHTML" hx-include="closest form"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button></form>
+{% empty %}
+  <div class="pos-empty-cart"><span>🛒</span><strong>Votre panier est vide</strong><p>Ajoutez un article depuis la colonne de gauche.</p></div>
+{% endfor %}

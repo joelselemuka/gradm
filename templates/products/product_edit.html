@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block heading %}Modifier {{ product.name }}{% endblock %}
+{% block content %}
+<section class="article-create-layout">
+  <aside class="article-create-aside">
+    <p class="eyebrow">Catalogue</p>
+    <h2>Modifier l'article</h2>
+    <p>Les mouvements, lots et ventes déjà enregistrés ne seront pas modifiés.</p>
+    <div class="article-create-note">
+      <strong>Attention</strong>
+      <span>Modifier le nom, la catégorie ou la marque affectera l'historique d'affichage de cet article dans les rapports.</span>
+    </div>
+  </aside>
+
+  <form class="pro-form article-create-form" method="post"
+        x-data="{ hasExpiry: {% if form.expiration_managed.value %}true{% else %}false{% endif %} }">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="error">{{ form.non_field_errors }}</div>{% endif %}
+
+    <div class="article-form-section">
+      <p class="eyebrow">Identification</p>
+      <div class="article-field-grid">
+        <label>Nom du produit{{ form.name }}{{ form.name.errors }}</label>
+        <label>Référence interne{{ form.internal_reference }}{{ form.internal_reference.errors }}</label>
+        <label>Catégorie
+          {% include 'products/partials/category_select.html' with categories=form.category.field.queryset selected_category=form.category.value %}
+          {{ form.category.errors }}
+        </label>
+        <label>Marque{{ form.brand_name }}{{ form.brand_name.errors }}</label>
+      </div>
+      <label>Description{{ form.description }}{{ form.description.errors }}</label>
+    </div>
+
+    <div class="article-form-section">
+      <p class="eyebrow">Expiration et état</p>
+      <label class="form-switch">
+        <input type="checkbox" name="expiration_managed" x-model="hasExpiry" {% if form.expiration_managed.value %}checked{% endif %}>
+        <span>Produit avec date d'expiration</span>
+      </label>
+      <div x-cloak x-show="hasExpiry" x-transition class="expiry-field">
+        <label>Date d'expiration
+          <input type="date" name="expiration_date" value="{{ form.expiration_date.value|default:'' }}" :required="hasExpiry">
+          {{ form.expiration_date.errors }}
+        </label>
+      </div>
+      <label class="form-switch" style="margin-top:12px">
+        {{ form.active }}
+        <span>Article actif (visible en caisse)</span>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <a class="button button-secondary" href="{% url 'products:detail' product.pk %}">Annuler</a>
+      <button class="button button-primary">Enregistrer les modifications</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

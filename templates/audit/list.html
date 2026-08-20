@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block heading %}Journal d'audit{% endblock %}
+{% block content %}
+<section class="management-heading">
+  <div>
+    <p class="eyebrow">Traçabilité</p>
+    <h2>Qui a fait quoi ?</h2>
+    <p>Chaque opération sensible conserve son auteur, sa date et son contexte.</p>
+  </div>
+</section>
+
+<section class="users-panel">
+  <form class="toolbar-filters" method="get">
+    <label>Rechercher<input name="q" value="{{ query }}" placeholder="Utilisateur, action ou objet"></label>
+    <label>Date<input type="date" name="date" value="{{ selected_date }}"></label>
+    <button class="button button-primary">Filtrer</button>
+  </form>
+
+  <div class="data-table-wrap">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Date / heure</th>
+          <th>Utilisateur</th>
+          <th>Opération</th>
+          <th>Élément concerné</th>
+          <th>Détails</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+        <tr>
+          <td>{{ entry.created_at|date:'d/m/Y H:i:s' }}</td>
+          <td>
+            {% if entry.actor %}
+              <strong>{{ entry.actor.username }}</strong>
+              <small class="muted-cell">{{ entry.actor.get_role_display }}</small>
+            {% else %}
+              Système
+            {% endif %}
+          </td>
+          <td><span class="role-badge role-admin">{{ entry.action }}</span></td>
+          <td>
+            <strong>{{ entry.target_label }}</strong>
+          </td>
+          <td class="text-sm" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ entry.after }}">
+            {{ entry.formatted_after }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td class="empty-cell" colspan="5">Aucune opération ne correspond à la recherche.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include 'partials/pagination.html' with page_obj=entries %}
+</section>
+{% endblock %}

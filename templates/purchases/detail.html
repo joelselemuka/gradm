@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block heading %}Commande {{ order.reference }}{% endblock %}
+{% block content %}
+<p class="mb-5 text-sm text-zinc-500">{{ order.supplier.name }} · {{ order.get_status_display }}</p>
+<section class="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+  <article class="rounded-xl border border-zinc-200 bg-white">
+    <table class="w-full text-sm">
+      <thead class="border-b text-xs text-zinc-500"><tr><th class="px-5 py-3 text-left">Article</th><th>Commandé</th><th>Reçu</th><th class="px-5 text-right">Coût</th></tr></thead>
+      <tbody>
+        {% for line in order.lines.all %}<tr class="border-b border-zinc-100"><td class="px-5 py-3">{{ line.variant.product.name }} · {{ line.variant.sku }}</td><td>{{ line.ordered_quantity }}</td><td>{{ line.received_quantity }}</td><td class="money px-5 text-right">{{ line.unit_cost|floatformat:2 }}</td></tr>
+        {% empty %}<tr><td class="px-5 py-8 text-zinc-500" colspan="4">Ajoutez une ligne.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </article>
+  <aside class="space-y-5">
+    <article class="rounded-xl border border-zinc-200 bg-white p-5"><h2 class="font-semibold">Ajouter une ligne</h2><form method="post" action="{% url 'purchases:line-add' order.pk %}">{% csrf_token %}{{ line_form.as_p }}<button class="mt-2 rounded-lg bg-zinc-900 px-3 py-2 text-sm text-white">Ajouter</button></form></article>
+    <article class="rounded-xl border border-zinc-200 bg-white p-5"><h2 class="font-semibold">Réception</h2><form method="post" action="{% url 'purchases:receive' order.pk %}">{% csrf_token %}{{ receive_form.as_p }}<button class="mt-2 rounded-lg bg-zinc-900 px-3 py-2 text-sm text-white">Réceptionner</button></form></article>
+  </aside>
+</section>
+{% endblock %}

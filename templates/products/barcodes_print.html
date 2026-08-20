@@ -1,0 +1,231 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code-barres — {{ variant.product.name }}</title>
+  <link rel="stylesheet" href="{% static 'css/admin-workflows.css' %}">
+  <style>
+    /* ── Reset & base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6f9;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    /* ── Toolbar ──────────────────────────────────────────── */
+    .bc-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 28px;
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .bc-toolbar-info { display: flex; flex-direction: column; gap: 2px; }
+    .bc-toolbar-info .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: #64748b; text-transform: uppercase; margin: 0; }
+    .bc-toolbar-info h1 { margin: 0; font-size: 18px; font-weight: 700; color: #0f172a; }
+    .bc-toolbar-info small { font-size: 12px; color: #64748b; }
+    .bc-toolbar-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* Copies selector */
+    .copies-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .copies-control label { color: #475569; white-space: nowrap; }
+    .copies-control input[type=number] {
+      width: 56px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      background: #fff;
+      color: #0f172a;
+    }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 9px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; transition: opacity .15s; }
+    .btn:hover { opacity: .88; }
+    .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-success { background: #16a34a; color: #fff; }
+
+    /* ── Preview area ─────────────────────────────────────── */
+    .bc-preview-wrap {
+      max-width: 860px;
+      margin: 32px auto;
+      padding: 0 24px;
+    }
+
+    .bc-preview-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .bc-preview-header h2 { margin: 0; font-size: 15px; font-weight: 700; color: #475569; }
+    .bc-preview-header span { font-size: 12px; color: #94a3b8; }
+
+    /* Grid of label cards */
+    .bc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .bc-label-card {
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .bc-label-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.09); }
+
+    .bc-label-card .product-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      text-align: center;
+      line-height: 1.35;
+    }
+    .bc-label-card .variant-name {
+      display: block;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .bc-label-card .bc-svg-wrap {
+      width: 100%;
+      text-align: center;
+    }
+    .bc-label-card .bc-svg-wrap svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .bc-label-card .bc-code {
+      font-size: 11px;
+      color: #94a3b8;
+      font-family: monospace;
+      letter-spacing: .05em;
+      background: #f8fafc;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid #e2e8f0;
+    }
+    .bc-empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+    .bc-empty strong { display: block; font-size: 16px; margin-bottom: 6px; color: #64748b; }
+
+    /* ── Print-only area ───────────────────────────────────── */
+    #print-area {
+      display: none;
+    }
+
+    /* ── @media print ─────────────────────────────────────── */
+    @media print {
+      body { background: #fff !important; }
+      .bc-toolbar, .bc-preview-wrap > .bc-preview-header { display: none !important; }
+      .bc-preview-wrap { max-width: none; margin: 0; padding: 0; }
+      .bc-grid { gap: 4mm; grid-template-columns: repeat(3, 1fr); }
+      .bc-label-card { border: 1px solid #999; border-radius: 2mm; box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+{# ── Toolbar ──────────────────────────────────────────────────────────────── #}
+<div class="bc-toolbar" id="bc-toolbar-ui">
+  <div class="bc-toolbar-info">
+    <p class="eyebrow">Codes-barres</p>
+    <h1>{{ variant.product.name }}</h1>
+    <small>
+      {% if variant.name != 'Article' %}{{ variant.name }} · {% endif %}
+      SKU : {{ variant.sku|default:'—' }}
+      · {{ aliases|length }} code{{ aliases|length|pluralize }} actif{{ aliases|length|pluralize }}
+    </small>
+  </div>
+  <div class="bc-toolbar-actions">
+    <div class="copies-control">
+      <label for="copies-input">Copies :</label>
+      <input type="number" id="copies-input" value="1" min="1" max="20">
+    </div>
+    <button class="btn btn-success" onclick="printBarcodes()">🖨 Imprimer</button>
+    <a class="btn btn-secondary" href="javascript:history.back()">← Retour</a>
+  </div>
+</div>
+
+{# ── Aperçu ───────────────────────────────────────────────────────────────── #}
+<div class="bc-preview-wrap">
+  <div class="bc-preview-header">
+    <h2>Aperçu des étiquettes</h2>
+    <span>Les dimensions réelles dépendent des paramètres de l'imprimante.</span>
+  </div>
+
+  <div class="bc-grid" id="bc-preview-grid">
+    {% for item in aliases %}
+    {% if item.svg %}
+    <div class="bc-label-card">
+      <div class="product-name">
+        {{ variant.product.name }}
+        {% if variant.name != 'Article' %}<span class="variant-name">{{ variant.name }}</span>{% endif %}
+      </div>
+      <div class="bc-svg-wrap">{{ item.svg|safe }}</div>
+      <span class="bc-code">{{ item.alias.code }}</span>
+    </div>
+    {% endif %}
+    {% empty %}
+    <div class="bc-empty">
+      <strong>Aucun code-barres imprimable</strong>
+      Activez ou générez un code interne depuis la fiche produit.
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+function printBarcodes() {
+  const copies = parseInt(document.getElementById('copies-input').value, 10) || 1;
+  const grid   = document.getElementById('bc-preview-grid');
+  if (!grid) return;
+
+  // Dupliquer les cards selon le nombre de copies
+  const originalCards = grid.innerHTML;
+  if (copies > 1) {
+    let multi = '';
+    for (let i = 0; i < copies; i++) multi += originalCards;
+    grid.innerHTML = multi;
+  }
+
+  window.print();
+
+  // Restaurer le contenu original après impression
+  setTimeout(() => { grid.innerHTML = originalCards; }, 500);
+}
+</script>
+</body>
+</html>

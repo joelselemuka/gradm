@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block heading %}Inventaires{% endblock %}
+{% block content %}
+<section class="management-heading"><div><p class="eyebrow">Contrôle physique</p><h2>Inventaires de stock</h2><p>Comparez le stock théorique aux quantités réellement comptées et tracez chaque écart.</p></div><a class="button button-primary" href="{% url 'inventory:count-create' %}">Démarrer un inventaire</a></section>
+<section class="users-panel"><div class="data-table-wrap"><table class="users-table"><thead><tr><th>Référence</th><th>Date</th><th>Créé par</th><th>Statut</th><th>Lignes</th><th></th></tr></thead><tbody>{% for count in counts %}<tr><td><strong>{{ count.reference }}</strong></td><td>{{ count.started_at|date:'d/m/Y H:i' }}</td><td>{{ count.created_by.username }}</td><td>{{ count.get_status_display }}</td><td>{{ count.lines.count }}</td><td><a class="button button-secondary" href="{% url 'inventory:count-detail' count.pk %}">Ouvrir</a></td></tr>{% empty %}<tr><td class="empty-cell" colspan="6">Aucun inventaire.</td></tr>{% endfor %}</tbody></table></div></section>
+{% include 'partials/pagination.html' with page_obj=counts %}
+{% endblock %}

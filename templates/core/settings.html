@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block heading %}Paramètres{% endblock %}
+{% block content %}
+<section class="settings-page" x-data="{ discountsEnabled: {% if form.discounts_enabled.value %}true{% else %}false{% endif %}, promotionEnabled: {% if form.promotion_enabled.value %}true{% else %}false{% endif %} }">
+  <header class="settings-hero">
+    <div>
+      <p class="eyebrow">Configuration générale</p>
+      <h2>Règles du commerce</h2>
+      <p>Les paramètres enregistrés ici sont appliqués par le serveur aux ventes, aux remises et aux opérations de caisse.</p>
+    </div>
+    <span class="settings-lock">ADMIN uniquement</span>
+  </header>
+
+  <form method="post" class="settings-form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="settings-alert">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="settings-grid">
+      <section class="settings-card">
+        <div class="settings-card-heading"><span class="settings-icon settings-icon-blue">◈</span><div><h3>Identité et caisse</h3><p>Informations affichées dans l'application et règles de stock.</p></div></div>
+        <div class="settings-fields">
+          <label>{{ form.name.label }}{{ form.name }}{% for error in form.name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.address.label }}{{ form.address }}{% for error in form.address.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.contact.label }}{{ form.contact }}{% for error in form.contact.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.ccm_number.label }}{{ form.ccm_number }}{% for error in form.ccm_number.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.national_id.label }}{{ form.national_id }}{% for error in form.national_id.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.currency.label }}{{ form.currency }}{% for error in form.currency.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.invoice_prefix.label }}{{ form.invoice_prefix }}{% for error in form.invoice_prefix.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.low_stock_threshold.label }}{{ form.low_stock_threshold }}{% for error in form.low_stock_threshold.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.expiry_alert_days.label }}{{ form.expiry_alert_days }}{% for error in form.expiry_alert_days.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+        </div>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-heading"><span class="settings-icon settings-icon-blue">✉</span><div><h3>Rapports par email</h3><p>Recevez le rapport général après la clôture de la journée.</p></div></div>
+        <label>{{ form.report_recipient_email.label }}{{ form.report_recipient_email }}{% if form.report_recipient_email.help_text %}<small>{{ form.report_recipient_email.help_text }}</small>{% endif %}{% for error in form.report_recipient_email.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+      </section>
+
+      <section class="settings-card settings-card-accent">
+        <div class="settings-card-heading"><span class="settings-icon settings-icon-green">%</span><div><h3>Réductions et promotions</h3><p>Contrôlez les remises disponibles au point de vente.</p></div></div>
+        <label class="settings-toggle"><span><strong>{{ form.discounts_enabled.label }}</strong><small>Active le champ de remise accordée et les promotions automatiques.</small></span>{{ form.discounts_enabled }}</label>
+        {% for error in form.discounts_enabled.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        <div class="settings-divider"></div>
+        <label class="settings-toggle"><span><strong>{{ form.promotion_enabled.label }}</strong><small>Déclenche une réduction automatique dès que le seuil est atteint.</small></span>{{ form.promotion_enabled }}</label>
+        {% for error in form.promotion_enabled.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        <div class="settings-fields settings-fields-two" :class="{ 'is-disabled': !discountsEnabled }">
+          <label>{{ form.promotion_threshold.label }}{{ form.promotion_threshold }}{% if form.promotion_threshold.help_text %}<small>{{ form.promotion_threshold.help_text }}</small>{% endif %}{% for error in form.promotion_threshold.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.promotion_type.label }}{{ form.promotion_type }}{% for error in form.promotion_type.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.promotion_value.label }}{{ form.promotion_value }}{% if form.promotion_value.help_text %}<small>{{ form.promotion_value.help_text }}</small>{% endif %}{% for error in form.promotion_value.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+          <label>{{ form.manual_discount_limit.label }}{{ form.manual_discount_limit }}{% if form.manual_discount_limit.help_text %}<small>{{ form.manual_discount_limit.help_text }}</small>{% endif %}{% for error in form.manual_discount_limit.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+        </div>
+      </section>
+
+      <section class="settings-card">
+        <div class="settings-card-heading"><span class="settings-icon settings-icon-amber">↔</span><div><h3>Change et devise</h3><p>Ce taux est repris par les opérations de change des sessions de vente.</p></div></div>
+        <label>{{ form.exchange_rate.label }}{{ form.exchange_rate }}{% if form.exchange_rate.help_text %}<small>{{ form.exchange_rate.help_text }}</small>{% endif %}{% for error in form.exchange_rate.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</label>
+        <div class="settings-rate-note"><strong>1 USD = {{ form.exchange_rate.value|default:'1.00' }} {{ form.currency.value|default:'FC' }}</strong><span>Le dollar américain est la seule devise étrangère acceptée.</span></div>
+      </section>
+    </div>
+    <footer class="settings-actions"><span>Les règles financières sont contrôlées côté serveur.</span><button type="submit" class="button button-primary">Enregistrer la configuration</button></footer>
+  </form>
+</section>
+{% endblock %}
