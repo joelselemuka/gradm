@@ -144,6 +144,10 @@ else:
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         }
     }
+    SILENCED_SYSTEM_CHECKS = [
+        "django_ratelimit.E003",
+        "django_ratelimit.W001",
+    ]
 
 # Channel Layers : Redis si disponible, sinon InMemory (WebSockets locaux uniquement)
 if REDIS_URL:
