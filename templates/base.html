@@ -5,11 +5,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{% block title %}GSM · Gestion commerciale{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <link rel="stylesheet" href="{% static 'css/admin-workflows.css' %}">
   <link rel="stylesheet" href="{% static 'css/catalogue-form.css' %}">
   <link rel="stylesheet" href="{% static 'css/category-management.css' %}">
   <link rel="stylesheet" href="{% static 'css/product-management.css' %}">
+
   <script defer src="https://unpkg.com/htmx.org@2.0.4"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   {% block extra_css %}{% endblock %}
@@ -82,13 +86,13 @@
   </script>
 
   {% if user.is_authenticated and user.can_manage_cash %}
-  {# ── Verrou automatique après 60 s d'inactivité (admin / manager uniquement) ── #}
+  {# ── Verrou automatique après 5 min d'inactivité (admin / manager uniquement) ── #}
   <div id="idle-warning" style="display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
        background:#1e293b;color:#f8fafc;padding:1rem 1.5rem;border-radius:.75rem;
        box-shadow:0 8px 32px rgba(0,0,0,.4);font-size:.9rem;max-width:320px;
        border-left:4px solid #ef4444;">
     <strong style="display:block;margin-bottom:.25rem">⚠️ Session inactive</strong>
-    <span>Déconnexion automatique dans <strong id="idle-countdown">10</strong> s.</span>
+    <span>Déconnexion automatique dans <strong id="idle-countdown">30</strong> s.</span>
     <br>
     <button onclick="resetIdleTimer()" style="margin-top:.6rem;padding:.35rem .9rem;
             background:#3b82f6;color:#fff;border:none;border-radius:.4rem;cursor:pointer;font-size:.85rem;">
@@ -97,8 +101,8 @@
   </div>
   <script>
     (function(){
-      const IDLE_LIMIT   = 60;   // secondes avant avertissement
-      const WARN_PERIOD  = 10;   // secondes d'avertissement avant déconnexion
+      const IDLE_LIMIT   = 300;  // 5 minutes avant avertissement
+      const WARN_PERIOD  = 30;   // 30 secondes d'avertissement avant déconnexion
       const LOGOUT_URL   = '/accounts/logout/';
       const banner       = document.getElementById('idle-warning');
       const countdownEl  = document.getElementById('idle-countdown');
