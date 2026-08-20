@@ -97,13 +97,8 @@ elif _postgres_db:
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
         "OPTIONS": {"connect_timeout": 10},
     }}
-elif not DEBUG:
-    from django.core.exceptions import ImproperlyConfigured
-    raise ImproperlyConfigured(
-        "DATABASE_URL ou POSTGRES_DB doit être défini en production."
-    )
 else:
-    # Fallback SQLite uniquement autorisé en développement local (DEBUG=True).
+    # Fallback SQLite (en local et pendant le build Docker pour collectstatic)
     DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}}
 
 AUTH_USER_MODEL = "accounts.User"
